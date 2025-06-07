@@ -946,7 +946,7 @@
     <div class="login-container" id="loginContainer">
         <div class="login-card">
             <h1 class="login-title">מערכת ניהול משימות</h1>
-            <form id="loginForm">
+ 	<form id="loginForm">
                 <div class="form-group">
                     <label class="form-label">אימייל</label>
                     <input type="email" class="form-input" id="username" placeholder="user@company.com" required>
@@ -955,13 +955,35 @@
                     <label class="form-label">סיסמה</label>
                     <input type="password" class="form-input" id="password" placeholder="הכנס סיסמה" required>
                 </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="rememberMe" style="width: auto;">
+                    <label for="rememberMe" style="margin: 0; cursor: pointer;">זכור אותי במחשב זה</label>
+                </div>
                 <button type="submit" class="btn btn-primary">
                     <span>כניסה למערכת</span>
                     <span class="spinner" style="display: none;"></span>
                 </button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" onclick="showPasswordReset()" style="color: var(--primary); text-decoration: none;">שכחתי סיסמה</a>
+                </div>
             </form>
         </div>
     </div>
+ <div class="login-card" id="resetPasswordCard" style="display: none;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה</h2>
+            <form id="resetPasswordForm">
+                <div class="form-group">
+                    <label class="form-label">הזן את האימייל שלך</label>
+                    <input type="email" class="form-input" id="resetEmail" placeholder="user@company.com" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <span>אפס סיסמה</span>
+                </button>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" onclick="showLogin()" style="color: var(--primary); text-decoration: none;">חזור להתחברות</a>
+                </div>
+            </form>
+        </div>
 
     <!-- Main App -->
     <div class="main-app" id="mainApp">
@@ -1179,12 +1201,9 @@
         let isAutoUpdate = false;
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function() {
             // Set default date to today
             document.getElementById('taskDeadline').valueAsDate = new Date();
-            
-            // Load saved data
-            loadSavedData();
             
             // Initialize upload area
             initializeUploadArea();
@@ -1195,15 +1214,23 @@
             e.preventDefault();
             const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
             
-            // Check if user exists
             const user = Object.values(users).find(u => u.email === email && u.password === password);
             
             if (user) {
                 currentUser = user.name;
                 userType = user.type;
                 
-                // Show loading
+                // אם זכור אותי מסומן
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                    localStorage.setItem('rememberedPassword', password);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                    localStorage.removeItem('rememberedPassword');
+                }
+                
                 this.querySelector('.spinner').style.display = 'inline-block';
                 this.querySelector('span:first-child').style.display = 'none';
                 
@@ -1211,11 +1238,9 @@
                     document.getElementById('loginContainer').style.display = 'none';
                     document.getElementById('mainApp').style.display = 'block';
                     
-                    // Update UI
                     document.getElementById('currentUser').textContent = currentUser;
                     document.getElementById('userRole').textContent = userType === 'partner' ? 'שותף' : 'עובד';
                     
-                    // Show/hide tabs based on user type
                     if (userType === 'employee') {
                         document.getElementById('settingsTab').style.display = 'none';
                         document.getElementById('myTasksTab').click();
@@ -1231,6 +1256,7 @@
                 this.querySelector('span:first-child').style.display = 'inline';
             }
         });
+
 
         // Initialize App
         function initializeApp() {
@@ -1567,7 +1593,10 @@
                         <span class="user-name">${emp.name}</span>
                         <span class="user-email">${emp.email}</span>
                     </div>
-                    <button class="btn btn-remove" onclick="removeUser('${emp.id}')">הסר</button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-small" style="background: var(--primary); color: white; padding: 0.375rem 0.75rem; font-size: 0.75rem; border-radius: 8px;" onclick="resetUserPassword('${emp.id}')">אפס סיסמה</button>
+                        <button class="btn btn-remove" onclick="removeUser('${emp.id}')">הסר</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1590,7 +1619,10 @@
                         <span class="user-name">${partner.name}</span>
                         <span class="user-email">${partner.email}</span>
                     </div>
-                    <button class="btn btn-remove" onclick="removeUser('${partner.id}')">הסר</button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-small" style="background: var(--primary); color: white; padding: 0.375rem 0.75rem; font-size: 0.75rem; border-radius: 8px;" onclick="resetUserPassword('${partner.id}')">אפס סיסמה</button>
+                        <button class="btn btn-remove" onclick="removeUser('${partner.id}')">הסר</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1921,10 +1953,17 @@ saveUsers();
             return date.toLocaleDateString('he-IL');
         }
 
-        // Logout
+      // Logout
         function logout() {
             currentUser = null;
             userType = null;
+            
+            // אם המשתמש לא רוצה שיזכרו אותו
+            if (!document.getElementById('rememberMe')?.checked) {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
+            }
+            
             document.getElementById('loginContainer').style.display = 'flex';
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('loginForm').reset();
@@ -2005,6 +2044,91 @@ saveUsers();
             loadClients();
             loadTasks();
             loadCloudConfig();
+        }
+ // בדיקת זכור אותי בטעינת הדף
+        window.addEventListener('load', function() {
+            // טען נתונים שמורים קודם
+            loadSavedData();
+            
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            const savedPassword = localStorage.getItem('rememberedPassword');
+            
+            if (savedEmail && savedPassword) {
+                // ניסיון התחברות אוטומטי
+                const user = Object.values(users).find(u => u.email === savedEmail && u.password === savedPassword);
+                if (user) {
+                    currentUser = user.name;
+                    userType = user.type;
+                    
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('mainApp').style.display = 'block';
+                    
+                    document.getElementById('currentUser').textContent = currentUser;
+                    document.getElementById('userRole').textContent = userType === 'partner' ? 'שותף' : 'עובד';
+                    
+                    if (userType === 'employee') {
+                        document.getElementById('settingsTab').style.display = 'none';
+                        document.getElementById('myTasksTab').click();
+                    } else {
+                        document.getElementById('myTasksTab').style.display = 'none';
+                    }
+                    
+                    initializeApp();
+                }
+            }
+        });
+
+        // פונקציות לאיפוס סיסמה
+        function showPasswordReset() {
+            document.getElementById('loginForm').parentElement.style.display = 'none';
+            document.getElementById('resetPasswordCard').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').parentElement.style.display = 'block';
+            document.getElementById('resetPasswordCard').style.display = 'none';
+        }
+
+        // טופס איפוס סיסמה
+        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            
+            const userEntry = Object.entries(users).find(([id, user]) => user.email === email);
+            
+            if (userEntry) {
+                const [userId, user] = userEntry;
+                const newPassword = generateRandomPassword();
+                users[userId].password = newPassword;
+                saveUsers();
+                
+                alert(`הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה היא: ${newPassword}\n\nאנא העתק אותה ושמור במקום בטוח.`);
+                showLogin();
+                this.reset();
+            } else {
+                alert('לא נמצא משתמש עם כתובת אימייל זו');
+            }
+        });
+
+        // איפוס סיסמה למשתמש מתוך הגדרות
+        function resetUserPassword(userId) {
+            if (confirm('האם אתה בטוח שברצונך לאפס את הסיסמה למשתמש זה?')) {
+                const newPassword = generateRandomPassword();
+                users[userId].password = newPassword;
+                saveUsers();
+                
+                alert(`הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה היא: ${newPassword}\n\nאנא העביר אותה למשתמש.`);
+            }
+        }
+
+        // יצירת סיסמה אקראית
+        function generateRandomPassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
         }
 
         // Auto-save every minute
