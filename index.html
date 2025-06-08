@@ -2086,6 +2086,33 @@ d();
             }
         }
 
+<script>
+    // הגדרת המשתמשים מה-localStorage
+    let users = JSON.parse(localStorage.getItem('taskManagerUsers') || '{}');
+
+    // אם אין משתמשים בכלל – ניצור משתמש ברירת מחדל
+    if (Object.keys(users).length === 0) {
+        users = {
+            "admin_1": {
+                id: "admin_1",
+                name: "שמואל מלול",
+                email: "shmuel@rm-cpa.co.il",
+                password: "123456",
+                type: "partner"
+            }
+        };
+        localStorage.setItem('taskManagerUsers', JSON.stringify(users));
+    }
+
+    // שאר משתנים גלובליים
+    let currentUser = null;
+    let userType = null;
+    let tasks = [];
+    let taskTypes = ['הכנת דוח', 'פגישה', 'שיחת טלפון', 'בדיקת מסמכים', 'אחר'];
+    let clients = [];
+</script>
+
+
         async function saveUsers() {
             if (useGoogleSheets) {
                 const usersArray = Object.entries(users).map(([id, user]) => ({
@@ -2097,15 +2124,7 @@ d();
                 localStorage.setItem('taskManagerUsers', JSON.stringify(users));
             }
         }
-localStorage.setItem('taskManagerUsers', JSON.stringify({
-  "admin_1": {
-    id: "admin_1",
-    name: "שמואל מלול",
-    email: "shmuel@rm-cpa.co.il",
-    password: "123456",
-    type: "partner"
-  }
-}));
+
 
         async function loadUsers() {
             if (useGoogleSheets) {
