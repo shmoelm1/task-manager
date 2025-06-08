@@ -7,6 +7,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
+#passwordChangeDialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #passwordChangeDialog.show {
+            display: flex !important;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -976,8 +992,18 @@
                     <label class="form-label">הזן את האימייל שלך</label>
                     <input type="email" class="form-input" id="resetEmail" placeholder="user@company.com" required>
                 </div>
+                <div id="newPasswordFields" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">סיסמה חדשה</label>
+                        <input type="password" class="form-input" id="newPassword" placeholder="הזן סיסמה חדשה" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">אימות סיסמה</label>
+                        <input type="password" class="form-input" id="confirmPassword" placeholder="הזן שוב את הסיסמה">
+                    </div>
+                </div>
                 <button type="submit" class="btn btn-primary">
-                    <span>אפס סיסמה</span>
+                    <span id="resetButtonText">המשך</span>
                 </button>
                 <div style="text-align: center; margin-top: 1rem;">
                     <a href="#" onclick="showLogin()" style="color: var(--primary); text-decoration: none;">חזור להתחברות</a>
@@ -1186,6 +1212,25 @@
                 </div>
             </div>
         </div>
+<!-- Password Change Dialog -->
+            <div id="passwordChangeDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+                <div class="card" style="max-width: 400px; width: 90%; position: relative;">
+                    <button onclick="closePasswordDialog()" style="position: absolute; top: 1rem; left: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+                    <h3 style="text-align: center; margin-bottom: 1.5rem;">שינוי סיסמה</h3>
+                    <form id="adminPasswordChangeForm" onsubmit="adminChangePassword(event)">
+                        <input type="hidden" id="changePasswordUserId">
+                        <div class="form-group">
+                            <label class="form-label">סיסמה חדשה</label>
+                            <input type="password" class="form-input" id="adminNewPassword" placeholder="הזן סיסמה חדשה" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">אימות סיסמה</label>
+                            <input type="password" class="form-input" id="adminConfirmPassword" placeholder="הזן שוב את הסיסמה" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">שמור סיסמה חדשה</button>
+                    </form>
+                </div>
+            </div>
     </div>
 
     <script>
@@ -2087,49 +2132,109 @@ saveUsers();
         function showLogin() {
             document.getElementById('loginForm').parentElement.style.display = 'block';
             document.getElementById('resetPasswordCard').style.display = 'none';
+            
+            // איפוס טופס איפוס סיסמה
+            document.getElementById('resetPasswordForm').reset();
+            document.getElementById('resetEmail').disabled = false;
+            document.getElementById('newPasswordFields').style.display = 'none';
+            document.getElementById('resetButtonText').textContent = 'המשך';
+            resetUserId = null;
         }
 
         // טופס איפוס סיסמה
+        let resetUserId = null;
         document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('resetEmail').value;
             
-            const userEntry = Object.entries(users).find(([id, user]) => user.email === email);
-            
-            if (userEntry) {
-                const [userId, user] = userEntry;
-                const newPassword = generateRandomPassword();
-                users[userId].password = newPassword;
+            if (!resetUserId) {
+                // שלב 1: בדיקת אימייל
+                const email = document.getElementById('resetEmail').value;
+                const userEntry = Object.entries(users).find(([id, user]) => user.email === email);
+                
+                if (userEntry) {
+                    const [userId, user] = userEntry;
+                    resetUserId = userId;
+                    
+                    // הצג שדות סיסמה
+                    document.getElementById('resetEmail').disabled = true;
+                    document.getElementById('newPasswordFields').style.display = 'block';
+                    document.getElementById('resetButtonText').textContent = 'שנה סיסמה';
+                    document.getElementById('newPassword').required = true;
+                    document.getElementById('confirmPassword').required = true;
+                    document.getElementById('newPassword').focus();
+                } else {
+                    alert('לא נמצא משתמש עם כתובת אימייל זו');
+                }
+            } else {
+                // שלב 2: שינוי סיסמה
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                if (newPassword.length < 6) {
+                    alert('הסיסמה חייבת להכיל לפחות 6 תווים');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    alert('הסיסמאות אינן תואמות');
+                    return;
+                }
+                
+                // עדכון סיסמה
+                users[resetUserId].password = newPassword;
                 saveUsers();
                 
-                alert(`הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה היא: ${newPassword}\n\nאנא העתק אותה ושמור במקום בטוח.`);
-                showLogin();
+                alert('הסיסמה שונתה בהצלחה!');
+                
+                // איפוס הטופס
                 this.reset();
-            } else {
-                alert('לא נמצא משתמש עם כתובת אימייל זו');
+                document.getElementById('resetEmail').disabled = false;
+                document.getElementById('newPasswordFields').style.display = 'none';
+                document.getElementById('resetButtonText').textContent = 'המשך';
+                resetUserId = null;
+                
+                showLogin();
             }
         });
 
-        // איפוס סיסמה למשתמש מתוך הגדרות
-        function resetUserPassword(userId) {
-            if (confirm('האם אתה בטוח שברצונך לאפס את הסיסמה למשתמש זה?')) {
-                const newPassword = generateRandomPassword();
-                users[userId].password = newPassword;
-                saveUsers();
-                
-                alert(`הסיסמה אופסה בהצלחה!\n\nהסיסמה החדשה היא: ${newPassword}\n\nאנא העביר אותה למשתמש.`);
-            }
+       // איפוס סיסמה למשתמש מתוך הגדרות
+       function resetUserPassword(userId) {
+            document.getElementById('changePasswordUserId').value = userId;
+            document.getElementById('passwordChangeDialog').classList.add('show');
+            document.getElementById('adminNewPassword').focus();
+        }
+        
+        function closePasswordDialog() {
+            document.getElementById('passwordChangeDialog').classList.remove('show');
+            document.getElementById('adminPasswordChangeForm').reset();
         }
 
-        // יצירת סיסמה אקראית
-        function generateRandomPassword() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
-            let password = '';
-            for (let i = 0; i < 8; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
+        // שינוי סיסמה על ידי מנהל
+        function adminChangePassword(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('changePasswordUserId').value;
+            const newPassword = document.getElementById('adminNewPassword').value;
+            const confirmPassword = document.getElementById('adminConfirmPassword').value;
+            
+            if (newPassword.length < 6) {
+                alert('הסיסמה חייבת להכיל לפחות 6 תווים');
+                return;
             }
-            return password;
+            
+            if (newPassword !== confirmPassword) {
+                alert('הסיסמאות אינן תואמות');
+                return;
+            }
+            
+            // עדכון סיסמה
+            users[userId].password = newPassword;
+            saveUsers();
+            
+            alert('הסיסמה שונתה בהצלחה!');
+            closePasswordDialog();
         }
+
 
         // Auto-save every minute
         setInterval(() => {
