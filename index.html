@@ -1290,13 +1290,15 @@ size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה<
         }
 
         // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set default date to today
-            document.getElementById('taskDeadline').valueAsDate = new Date();
-            
-            // Initialize upload area
-            initializeUploadArea();
-        });
+       document.addEventListener('DOMContentLoaded', async function() {
+    await loadUsers(); // ✅ קריאה חיונית
+
+    // Set default date to today
+    document.getElementById('taskDeadline').valueAsDate = new Date();
+
+    // Initialize upload area
+    initializeUploadArea();
+});
 
         // Login System
         document.getElementById('loginForm').addEventListener('submit', function(e) {
