@@ -2097,6 +2097,15 @@ d();
                 localStorage.setItem('taskManagerUsers', JSON.stringify(users));
             }
         }
+localStorage.setItem('taskManagerUsers', JSON.stringify({
+  "admin_1": {
+    id: "admin_1",
+    name: "שמואל מלול",
+    email: "shmuel@rm-cpa.co.il",
+    password: "123456",
+    type: "partner"
+  }
+}));
 
         async function loadUsers() {
             if (useGoogleSheets) {
