@@ -1250,23 +1250,46 @@ size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה<
         // Google Sheets Configuration
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyE6wQy6FVDR5tauspoARga_yeC02oERflly-Krb7oAlB9FUcZmEtDWSgpikh8thQhz/exec';
         let useGoogleSheets = false;
+        // בכניסה ראשונה - אל תנסה לטעון מ-Google Sheets
+if (!localStorage.getItem('taskManagerInitialized')) {
+    useGoogleSheets = false;
+    console.log('כניסה ראשונה - משתמש באחסון מקומי');
+}
         // פונקציות לעבודה עם Google Sheets
-        async function readFromSheet(sheetName) {
-            if (!useGoogleSheets) return null;
-            
-            try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read&sheet=${sheetName}`);
-                const result = await response.json();
-                if (result.success) {
-                    return result.data;
-                }
-                console.error('Error reading from sheet:', result.error);
-                return null;
-            } catch (error) {
-                console.error('Network error:', error);
-                return null;
-            }
+ async function readFromSheet(sheetName) {
+    if (!useGoogleSheets) return null;
+    
+    try {
+        console.log(`טוען נתונים מ-${sheetName}...`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read&sheet=${sheetName}`);
+        
+        // בדוק אם התגובה תקינה
+        if (!response.ok) {
+            console.error(`שגיאת HTTP: ${response.status}`);
+            return null;
         }
+        
+        const text = await response.text();
+        
+        // נסה לפרסר את ה-JSON
+        try {
+            const result = JSON.parse(text);
+            if (result.success) {
+                console.log(`נטענו ${result.data ? result.data.length : 0} רשומות מ-${sheetName}`);
+                return result.data;
+            }
+            console.error('Error reading from sheet:', result.error);
+            return null;
+        } catch (parseError) {
+            console.error('שגיאה בפירסור תגובה:', parseError);
+            console.error('תגובה מהשרת:', text);
+            return null;
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+        return null;
+    }
+}
 
         async function writeToSheet(sheetName, data) {
             if (!useGoogleSheets) return false;
@@ -1346,6 +1369,21 @@ size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה<
         });
 
         // Initialize App
+        function initializeApp() {
+    // סמן שהמערכת אותחלה
+    localStorage.setItem('taskManagerInitialized', 'true');
+    
+    // אם זו הכניסה הראשונה, הפעל Google Sheets
+    if (!useGoogleSheets && GOOGLE_SCRIPT_URL !== 'YOUR_WEB_APP_URL_HERE') {
+        useGoogleSheets = true;
+        console.log('מפעיל חיבור ל-Google Sheets');
+    }
+    
+    // המשך הקוד הקיים...
+    updateEmployeesList();
+    updatePartnersList();
+    // וכו'...
+}
         function initializeApp() {
             updateEmployeesList();
             updatePartnersList();
@@ -2097,33 +2135,62 @@ d();
             }
         }
 
-        async function loadUsers() {
-            if (useGoogleSheets) {
-                const data = await readFromSheet('users');
-                if (data && data.length > 0) {
-                    users = {};
-                    data.forEach(user => {
-                        users[user.id] = {
-                            id: user.id,
-                            name: user.name,
-                            email: user.email,
-                            password: user.password,
-                            type: user.type
-                        };
-                    });
-                } else {
-                    // Create default admin
-                    users = {
-                        'admin_1': {
-                            id: 'admin_1',
-                            name: 'מנהל ראשי',
-                            email: 'admin@company.com',
-                            password: 'admin123',
-                            type: 'partner'
-                        }
+     async function loadUsers() {
+    if (useGoogleSheets) {
+        try {
+            const data = await readFromSheet('users');
+            if (data && data.length > 0) {
+                users = {};
+                data.forEach(user => {
+                    users[user.id] = {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        password: user.password,
+                        type: user.type
                     };
-                    await saveUsers();
-                }
+                });
+            } else {
+                // אם אין משתמשים ב-Sheets, צור admin
+                users = {
+                    'admin_1': {
+                        id: 'admin_1',
+                        name: 'מנהל ראשי',
+                        email: 'admin@company.com',
+                        password: 'admin123',
+                        type: 'partner'
+                    }
+                };
+                await saveUsers();
+            }
+        } catch (error) {
+            console.error('שגיאה בטעינת משתמשים מ-Sheets:', error);
+            // במקרה של שגיאה, טען מקומית
+            loadUsersLocally();
+        }
+    } else {
+        loadUsersLocally();
+    }
+}
+
+// הוסף פונקציה חדשה אחרי loadUsers:
+function loadUsersLocally() {
+    const saved = localStorage.getItem('taskManagerUsers');
+    if (saved) {
+        users = JSON.parse(saved);
+    } else {
+        users = {
+            'admin_1': {
+                id: 'admin_1',
+                name: 'מנהל ראשי',
+                email: 'admin@company.com',
+                password: 'admin123',
+                type: 'partner'
+            }
+        };
+        saveUsers();
+    }
+}
             } else {
                 const saved = localStorage.getItem('taskManagerUsers');
                 if (saved) {
@@ -2200,22 +2267,48 @@ d();
                 toggleAutoUpdate();
             }
         }
-
         async function loadSavedData() {
-            try {
-                await loadUsers();
-                await loadTaskTypes();
-                await loadClients();
-                await loadTasks();
-                loadCloudConfig();
-                checkAutoLogin();
-            } catch (error) {
-                console.error('Error loading data:', error);
-                // Fallback to localStorage if Google Sheets fails
-                useGoogleSheets = false;
-                loadSavedData();
-            }
+    try {
+        // תמיד טען את המשתמש הראשוני קודם
+        const saved = localStorage.getItem('taskManagerUsers');
+        if (!saved && !useGoogleSheets) {
+            // אם אין משתמשים שמורים, צור admin
+            users = {
+                'admin_1': {
+                    id: 'admin_1',
+                    name: 'מנהל ראשי',
+                    email: 'admin@company.com',
+                    password: 'admin123',
+                    type: 'partner'
+                }
+            };
+            await saveUsers();
         }
+        
+        // עכשיו טען את שאר הנתונים
+        await loadUsers();
+        await loadTaskTypes();
+        await loadClients();
+        await loadTasks();
+        loadCloudConfig();
+        checkAutoLogin();
+    } catch (error) {
+        console.error('Error loading data:', error);
+        // במקרה של שגיאה, צור admin מקומי
+        users = {
+            'admin_1': {
+                id: 'admin_1',
+                name: 'מנהל ראשי',
+                email: 'admin@company.com',
+                password: 'admin123',
+                type: 'partner'
+            }
+        };
+        // עבור לאחסון מקומי
+        useGoogleSheets = false;
+        console.log('עובר למצב אחסון מקומי עקב שגיאה');
+    }
+}
 
         // Move auto-login check to separate function
         function checkAutoLogin() {
