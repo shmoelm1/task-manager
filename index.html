@@ -2202,10 +2202,10 @@ saveUsers();
             document.getElementById('changePasswordUserId').value = userId;
             document.getElementById('passwordChangeDialog').classList.add('show');
             document.getElementById('adminNewPassword').focus();
-        }
-        
+    
+        // סגירת דיאלוג שינוי סיסמה
         function closePasswordDialog() {
-            document.getElementById('passwordChangeDialog').classList.remove('show');
+            document.getElementById('passwordChangeDialog').style.display = 'none';
             document.getElementById('adminPasswordChangeForm').reset();
         }
 
