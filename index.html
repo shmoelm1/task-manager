@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
-#passwordChangeDialog {
+        #passwordChangeDialog {
             display: none;
             position: fixed;
             top: 0;
@@ -23,7 +23,7 @@
         #passwordChangeDialog.show {
             display: flex !important;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
@@ -963,7 +963,7 @@
     <div class="login-container" id="loginContainer">
         <div class="login-card">
             <h1 class="login-title">מערכת ניהול משימות</h1>
- 	<form id="loginForm">
+            <form id="loginForm">
                 <div class="form-group">
                     <label class="form-label">אימייל</label>
                     <input type="email" class="form-input" id="username" placeholder="user@company.com" required>
@@ -985,9 +985,9 @@
                 </div>
             </form>
         </div>
-    </div>
- <div class="login-card" id="resetPasswordCard" style="display: none;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה</h2>
+        <div class="login-card" id="resetPasswordCard" style="display: none;">
+            <h2 style="font-
+size: 1.8rem; margin-bottom: 1.5rem; text-align: center;">איפוס סיסמה</h2>
             <form id="resetPasswordForm">
                 <div class="form-group">
                     <label class="form-label">הזן את האימייל שלך</label>
@@ -1011,6 +1011,7 @@
                 </div>
             </form>
         </div>
+    </div>
 
     <!-- Main App -->
     <div class="main-app" id="mainApp">
@@ -1032,7 +1033,7 @@
                 <button class="nav-tab active" onclick="switchTab('createTask')">יצירת משימה</button>
                 <button class="nav-tab" onclick="switchTab('dashboard')">דשבורד משימות</button>
                 <button class="nav-tab" onclick="switchTab('myTasks')" id="myTasksTab">המשימות שלי</button>
-<button class="nav-tab" onclick="switchTab('settings')" id="settingsTab">הגדרות</button>
+                <button class="nav-tab" onclick="switchTab('settings')" id="settingsTab">הגדרות</button>
             </div>
 
             <!-- Create Task Section -->
@@ -1213,25 +1214,25 @@
                 </div>
             </div>
         </div>
-<!-- Password Change Dialog -->
-                <div id="passwordChangeDialog">
-                <div class="card" style="max-width: 400px; width: 90%; position: relative;">
-                    <button onclick="closePasswordDialog()" style="position: absolute; top: 1rem; left: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
-                    <h3 style="text-align: center; margin-bottom: 1.5rem;">שינוי סיסמה</h3>
-                    <form id="adminPasswordChangeForm" onsubmit="adminChangePassword(event)">
-                        <input type="hidden" id="changePasswordUserId">
-                        <div class="form-group">
-                            <label class="form-label">סיסמה חדשה</label>
-                            <input type="password" class="form-input" id="adminNewPassword" placeholder="הזן סיסמה חדשה" minlength="6" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">אימות סיסמה</label>
-                            <input type="password" class="form-input" id="adminConfirmPassword" placeholder="הזן שוב את הסיסמה" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">שמור סיסמה חדשה</button>
-                    </form>
-                </div>
+        <!-- Password Change Dialog -->
+        <div id="passwordChangeDialog">
+            <div class="card" style="max-width: 400px; width: 90%; position: relative;">
+                <button onclick="closePasswordDialog()" style="position: absolute; top: 1rem; left: 1rem; background: none; border: none; font-size: 1.5rem; cursor: pointer;">×</button>
+                <h3 style="text-align: center; margin-bottom: 1.5rem;">שינוי סיסמה</h3>
+                <form id="adminPasswordChangeForm" onsubmit="adminChangePassword(event)">
+                    <input type="hidden" id="changePasswordUserId">
+                    <div class="form-group">
+                        <label class="form-label">סיסמה חדשה</label>
+                        <input type="password" class="form-input" id="adminNewPassword" placeholder="הזן סיסמה חדשה" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">אימות סיסמה</label>
+                        <input type="password" class="form-input" id="adminConfirmPassword" placeholder="הזן שוב את הסיסמה" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">שמור סיסמה חדשה</button>
+                </form>
             </div>
+        </div>
     </div>
 
     <script>
@@ -1245,9 +1246,51 @@
         let cloudUrl = '';
         let autoUpdateInterval = null;
         let isAutoUpdate = false;
+        
+        // Google Sheets Configuration
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyE6wQy6FVDR5tauspoARga_yeC02oERflly-Krb7oAlB9FUcZmEtDWSgpikh8thQhz/exec';
+        let useGoogleSheets = GOOGLE_SCRIPT_URL !== 'YOUR_WEB_APP_URL_HERE';
+
+        // פונקציות לעבודה עם Google Sheets
+        async function readFromSheet(sheetName) {
+            if (!useGoogleSheets) return null;
+            
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=read&sheet=${sheetName}`);
+                const result = await response.json();
+                if (result.success) {
+                    return result.data;
+                }
+                console.error('Error reading from sheet:', result.error);
+                return null;
+            } catch (error) {
+                console.error('Network error:', error);
+                return null;
+            }
+        }
+
+        async function writeToSheet(sheetName, data) {
+            if (!useGoogleSheets) return false;
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'write',
+                        sheet: sheetName,
+                        content: data
+                    })
+                });
+                const result = await response.json();
+                return result.success;
+            } catch (error) {
+                console.error('Network error:', error);
+                return false;
+            }
+        }
 
         // Initialize
-      document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function() {
             // Set default date to today
             document.getElementById('taskDeadline').valueAsDate = new Date();
             
@@ -1303,7 +1346,6 @@
             }
         });
 
-
         // Initialize App
         function initializeApp() {
             updateEmployeesList();
@@ -1345,7 +1387,7 @@
         }
 
         // Create Task
-        document.getElementById('createTaskForm').addEventListener('submit', function(e) {
+        document.getElementById('createTaskForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             // Get selected employees
@@ -1367,7 +1409,7 @@
                 // Add to task types if not exists
                 if (!taskTypes.includes(customType)) {
                     taskTypes.push(customType);
-                    saveTaskTypes();
+                    await saveTaskTypes();
                     updateTaskTypesList();
                 }
             }
@@ -1391,9 +1433,9 @@
             this.querySelector('.spinner').style.display = 'inline-block';
             this.querySelector('span:first-child').style.display = 'none';
             
-            setTimeout(() => {
+            setTimeout(async () => {
                 tasks.push(newTask);
-                saveTasks();
+                await saveTasks();
                 
                 // Show success message
                 document.getElementById('taskSuccessMessage').classList.add('show');
@@ -1577,7 +1619,7 @@
             if (event.target.classList.contains('btn')) return;
         }
 
-        function editTaskStatus(event, taskId) {
+        async function editTaskStatus(event, taskId) {
             event.stopPropagation();
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
@@ -1586,27 +1628,28 @@
             
             if (newStatus && ['pending', 'in-progress', 'waiting', 'completed'].includes(newStatus)) {
                 task.status = newStatus;
-                saveTasks();
+                await saveTasks();
                 loadDashboard();
             }
         }
 
-        function deleteTask(event, taskId) {
+        async function deleteTask(event, taskId) {
             event.stopPropagation();
             if (confirm('האם אתה בטוח שברצונך למחוק משימה זו?')) {
                 tasks = tasks.filter(t => t.id !== taskId);
-                saveTasks();
-                loadDashboard();
+                await saveTasks();
+                loadDashboar
+d();
                 updateFilters();
             }
         }
 
-        function updateTaskStatus(taskId) {
+        async function updateTaskStatus(taskId) {
             const task = tasks.find(t => t.id === taskId);
             if (task) {
                 task.status = document.getElementById(`status-${taskId}`).value;
                 task.notes = document.getElementById(`note-${taskId}`).value;
-                saveTasks();
+                await saveTasks();
                 
                 // Show success animation
                 const button = event.target;
@@ -1715,7 +1758,7 @@
         }
 
         // User Management
-        function addEmployee(e) {
+        async function addEmployee(e) {
             e.preventDefault();
             const name = document.getElementById('newEmployeeName').value;
             const email = document.getElementById('newEmployeeEmail').value;
@@ -1730,13 +1773,13 @@
                 type: 'employee'
             };
             
-            saveUsers();
+            await saveUsers();
             updateEmployeesList();
             updateFilters();
             e.target.reset();
         }
 
-        function addPartner(e) {
+        async function addPartner(e) {
             e.preventDefault();
             const name = document.getElementById('newPartnerName').value;
             const email = document.getElementById('newPartnerEmail').value;
@@ -1751,17 +1794,16 @@
                 type: 'partner'
             };
             
-            saveUsers
-saveUsers();
+            await saveUsers();
             updatePartnersList();
             updateFilters();
             e.target.reset();
         }
 
-        function removeUser(userId) {
+        async function removeUser(userId) {
             if (confirm('האם אתה בטוח שברצונך למחוק משתמש זה?')) {
                 delete users[userId];
-                saveUsers();
+                await saveUsers();
                 updateEmployeesList();
                 updatePartnersList();
                 updateFilters();
@@ -1769,21 +1811,21 @@ saveUsers();
         }
 
         // Task Type Management
-        function addTaskType(e) {
+        async function addTaskType(e) {
             e.preventDefault();
             const newType = document.getElementById('newTaskType').value;
             if (newType && !taskTypes.includes(newType)) {
                 taskTypes.push(newType);
-                saveTaskTypes();
+                await saveTaskTypes();
                 updateTaskTypesList();
                 e.target.reset();
             }
         }
 
-        function removeTaskType(type) {
+        async function removeTaskType(type) {
             if (confirm('האם אתה בטוח שברצונך למחוק סוג משימה זה?')) {
                 taskTypes = taskTypes.filter(t => t !== type);
-                saveTaskTypes();
+                await saveTaskTypes();
                 updateTaskTypesList();
             }
         }
@@ -1820,14 +1862,14 @@ saveUsers();
             });
         }
 
-        function handleFile(file) {
+        async function handleFile(file) {
             if (!file.name.match(/\.(xlsx|xls)$/)) {
                 alert('אנא בחר קובץ Excel (.xlsx או .xls)');
                 return;
             }
 
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = async function(e) {
                 try {
                     const data = new Uint8Array(e.target.result);
                     const workbook = XLSX.read(data, {type: 'array'});
@@ -1835,7 +1877,7 @@ saveUsers();
                     const worksheet = workbook.Sheets[sheetName];
                     const jsonData = XLSX.utils.sheet_to_json(worksheet);
                     
-                    processClientData(jsonData);
+                    await processClientData(jsonData);
                     showCloudStatus('נתוני לקוחות נטענו בהצלחה!', 'success');
                 } catch (error) {
                     alert('שגיאה בקריאת הקובץ');
@@ -1845,7 +1887,7 @@ saveUsers();
             reader.readAsArrayBuffer(file);
         }
 
-        function processClientData(data) {
+        async function processClientData(data) {
             // Try to find client column
             const possibleColumns = ['שם לקוח', 'לקוח', 'שם', 'Client', 'Name', 'customer'];
             let clientColumn = null;
@@ -1871,11 +1913,13 @@ saveUsers();
             // Remove duplicates
             clients = [...new Set(clients)];
             
-            saveClients();
+            await saveClients();
             updateClientsDatalist();
         }
 
         // Cloud Configuration
+        function saveCloudConfig()
+// Cloud Configuration
         function saveCloudConfig() {
             const url = document.getElementById('cloudUrl').value.trim();
             if (!url) {
@@ -1915,8 +1959,8 @@ saveUsers();
                     Papa.parse(csvText, {
                         header: true,
                         skipEmptyLines: true,
-                        complete: function(results) {
-                            processClientData(results.data);
+                        complete: async function(results) {
+                            await processClientData(results.data);
                             showCloudStatus('נתונים נטענו בהצלחה!', 'success');
                             localStorage.setItem('taskManagerLastUpdate', Date.now().toString());
                         },
@@ -1999,7 +2043,7 @@ saveUsers();
             return date.toLocaleDateString('he-IL');
         }
 
-      // Logout
+        // Logout
         function logout() {
             currentUser = null;
             userType = null;
@@ -2015,60 +2059,134 @@ saveUsers();
             document.getElementById('loginForm').reset();
         }
 
-        // Save/Load Functions
-        function saveTasks() {
-            localStorage.setItem('taskManagerTasks', JSON.stringify(tasks));
-        }
-
-        function loadTasks() {
-            const saved = localStorage.getItem('taskManagerTasks');
-            if (saved) {
-                tasks = JSON.parse(saved);
-            }
-        }
-
-        function saveUsers() {
-            localStorage.setItem('taskManagerUsers', JSON.stringify(users));
-        }
-
-        function loadUsers() {
-            const saved = localStorage.getItem('taskManagerUsers');
-            if (saved) {
-                users = JSON.parse(saved);
+        // Save/Load Functions with Google Sheets
+        async function saveTasks() {
+            if (useGoogleSheets) {
+                await writeToSheet('tasks', tasks);
             } else {
-                // Create default admin user if no users exist
-                users = {
-                    'admin_1': {
-                        id: 'admin_1',
-                        name: 'מנהל ראשי',
-                        email: 'admin@company.com',
-                        password: 'admin123',
-                        type: 'partner'
-                    }
-                };
-                saveUsers();
+                localStorage.setItem('taskManagerTasks', JSON.stringify(tasks));
             }
         }
 
-        function saveTaskTypes() {
-            localStorage.setItem('taskManagerTaskTypes', JSON.stringify(taskTypes));
-        }
-
-        function loadTaskTypes() {
-            const saved = localStorage.getItem('taskManagerTaskTypes');
-            if (saved) {
-                taskTypes = JSON.parse(saved);
+        async function loadTasks() {
+            if (useGoogleSheets) {
+                const data = await readFromSheet('tasks');
+                if (data) {
+                    tasks = data.map(task => ({
+                        ...task,
+                        id: parseInt(task.id),
+                        employees: task.employees ? task.employees.split(',') : []
+                    }));
+                }
+            } else {
+                const saved = localStorage.getItem('taskManagerTasks');
+                if (saved) {
+                    tasks = JSON.parse(saved);
+                }
             }
         }
 
-        function saveClients() {
-            localStorage.setItem('taskManagerClients', JSON.stringify(clients));
+        async function saveUsers() {
+            if (useGoogleSheets) {
+                const usersArray = Object.entries(users).map(([id, user]) => ({
+                    id: id,
+                    ...user
+                }));
+                await writeToSheet('users', usersArray);
+            } else {
+                localStorage.setItem('taskManagerUsers', JSON.stringify(users));
+            }
         }
 
-        function loadClients() {
-            const saved = localStorage.getItem('taskManagerClients');
-            if (saved) {
-                clients = JSON.parse(saved);
+        async function loadUsers() {
+            if (useGoogleSheets) {
+                const data = await readFromSheet('users');
+                if (data && data.length > 0) {
+                    users = {};
+                    data.forEach(user => {
+                        users[user.id] = {
+                            id: user.id,
+                            name: user.name,
+                            email: user.email,
+                            password: user.password,
+                            type: user.type
+                        };
+                    });
+                } else {
+                    // Create default admin
+                    users = {
+                        'admin_1': {
+                            id: 'admin_1',
+                            name: 'מנהל ראשי',
+                            email: 'admin@company.com',
+                            password: 'admin123',
+                            type: 'partner'
+                        }
+                    };
+                    await saveUsers();
+                }
+            } else {
+                const saved = localStorage.getItem('taskManagerUsers');
+                if (saved) {
+                    users = JSON.parse(saved);
+                } else {
+                    users = {
+                        'admin_1': {
+                            id: 'admin_1',
+                            name: 'מנהל ראשי',
+                            email: 'admin@company.com',
+                            password: 'admin123',
+                            type: 'partner'
+                        }
+                    };
+                    saveUsers();
+                }
+            }
+        }
+
+        async function saveTaskTypes() {
+            if (useGoogleSheets) {
+                const typesArray = taskTypes.map(type => ({ type: type }));
+                await writeToSheet('taskTypes', typesArray);
+            } else {
+                localStorage.setItem('taskManagerTaskTypes', JSON.stringify(taskTypes));
+            }
+        }
+
+        async function loadTaskTypes() {
+            if (useGoogleSheets) {
+                const data = await readFromSheet('taskTypes');
+                if (data && data.length > 0) {
+                    taskTypes = data.map(item => item.type);
+                }
+            } else {
+                const saved = localStorage.getItem('taskManagerTaskTypes');
+                if (saved) {
+                    taskTypes = JSON.parse(saved);
+                }
+            }
+        }
+
+        async function saveClients() {
+            if (useGoogleSheets) {
+                const clientsArray = clients.map(client => ({ name: client }));
+                await writeToSheet('clients', clientsArray);
+            } else {
+                localStorage.setItem('taskManagerClients', JSON.stringify(clients));
+            }
+        }
+
+        async function loadClients() {
+            if (useGoogleSheets) {
+                const data = await readFromSheet('clients');
+                if (data) {
+                    clients = data.map(item => item.name).filter(name => name);
+                }
+            } else {
+                const saved = localStorage.getItem('taskManagerClients');
+                if (saved) {
+                    clients = JSON.parse(saved);
+                }
             }
         }
 
@@ -2084,23 +2202,28 @@ saveUsers();
             }
         }
 
-        function loadSavedData() {
-            loadUsers();
-            loadTaskTypes();
-            loadClients();
-            loadTasks();
-            loadCloudConfig();
+        async function loadSavedData() {
+            try {
+                await loadUsers();
+                await loadTaskTypes();
+                await loadClients();
+                await loadTasks();
+                loadCloudConfig();
+                checkAutoLogin();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Fallback to localStorage if Google Sheets fails
+                useGoogleSheets = false;
+                loadSavedData();
+            }
         }
- // בדיקת זכור אותי בטעינת הדף
-        window.addEventListener('load', function() {
-            // טען נתונים שמורים קודם
-            loadSavedData();
-            
+
+        // Move auto-login check to separate function
+        function checkAutoLogin() {
             const savedEmail = localStorage.getItem('rememberedEmail');
             const savedPassword = localStorage.getItem('rememberedPassword');
             
             if (savedEmail && savedPassword) {
-                // ניסיון התחברות אוטומטי
                 const user = Object.values(users).find(u => u.email === savedEmail && u.password === savedPassword);
                 if (user) {
                     currentUser = user.name;
@@ -2122,6 +2245,11 @@ saveUsers();
                     initializeApp();
                 }
             }
+        }
+
+        // בדיקת זכור אותי בטעינת הדף
+        window.addEventListener('load', function() {
+            loadSavedData();
         });
 
         // פונקציות לאיפוס סיסמה
@@ -2144,7 +2272,7 @@ saveUsers();
 
         // טופס איפוס סיסמה
         let resetUserId = null;
-        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+        document.getElementById('resetPasswordForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             if (!resetUserId) {
@@ -2183,7 +2311,7 @@ saveUsers();
                 
                 // עדכון סיסמה
                 users[resetUserId].password = newPassword;
-                saveUsers();
+                await saveUsers();
                 
                 alert('הסיסמה שונתה בהצלחה!');
                 
@@ -2198,7 +2326,7 @@ saveUsers();
             }
         });
 
-       // איפוס סיסמה למשתמש מתוך הגדרות
+        // איפוס סיסמה למשתמש מתוך הגדרות
         function resetUserPassword(userId) {
             document.getElementById('changePasswordUserId').value = userId;
             document.getElementById('passwordChangeDialog').classList.add('show');
@@ -2212,7 +2340,7 @@ saveUsers();
         }
 
         // שינוי סיסמה על ידי מנהל
-        function adminChangePassword(e) {
+        async function adminChangePassword(e) {
             e.preventDefault();
             
             const userId = document.getElementById('changePasswordUserId').value;
@@ -2231,12 +2359,11 @@ saveUsers();
             
             // עדכון סיסמה
             users[userId].password = newPassword;
-            saveUsers();
+            await saveUsers();
             
             alert('הסיסמה שונתה בהצלחה!');
             closePasswordDialog();
         }
-
 
         // Auto-save every minute
         setInterval(() => {
@@ -2245,6 +2372,13 @@ saveUsers();
                 console.log('נתונים נשמרו אוטומטית');
             }
         }, 60000);
+
+        // הודעה בקונסול
+        if (useGoogleSheets) {
+            console.log('✅ מחובר ל-Google Sheets');
+        } else {
+            console.log('💾 משתמש באחסון מקומי');
+        }
 
         // Show login instructions
         console.log('ברוך הבא למערכת ניהול המשימות!');
