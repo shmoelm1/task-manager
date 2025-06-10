@@ -608,46 +608,32 @@
         let clients = [];
         let currentEditTaskId = null;
         let currentEditUserId = null;
+        let hasAutoLoggedIn = false;
 
         // נתונים ראשוניים
         function initializeData() {
             // משתמשים ראשוניים
-            if (!localStorage.getItem('users')) {
-                users = [
-                    {
-                        id: 1,
-                        username: 'shmuel',
-                        fullName: 'שמואל',
-                        role: 'partner',
-                        email: 'shmuel@rm-cpa.co.il',
-                        password: '123456',
-                        isFirstLogin: false
-                    }
-                ];
-                localStorage.setItem('users', JSON.stringify(users));
-            } else {
-                users = JSON.parse(localStorage.getItem('users'));
-            }
+            users = [
+                {
+                    id: 1,
+                    username: 'shmuel',
+                    fullName: 'שמואל',
+                    role: 'partner',
+                    email: 'shmuel@rm-cpa.co.il',
+                    password: '123456',
+                    isFirstLogin: false
+                }
+            ];
 
             // לקוחות ראשוניים
-            if (!localStorage.getItem('clients')) {
-                clients = [
-                    { id: 1, name: 'חברת ABC', contact: 'יוסי כהן', phone: '050-1234567' },
-                    { id: 2, name: 'משרד XYZ', contact: 'שרה לוי', phone: '052-9876543' },
-                    { id: 3, name: 'עסק 123', contact: 'דוד אברהם', phone: '054-5555555' }
-                ];
-                localStorage.setItem('clients', JSON.stringify(clients));
-            } else {
-                clients = JSON.parse(localStorage.getItem('clients'));
-            }
+            clients = [
+                { id: 1, name: 'חברת ABC', contact: 'יוסי כהן', phone: '050-1234567' },
+                { id: 2, name: 'משרד XYZ', contact: 'שרה לוי', phone: '052-9876543' },
+                { id: 3, name: 'עסק 123', contact: 'דוד אברהם', phone: '054-5555555' }
+            ];
 
             // משימות ראשוניות
-            if (!localStorage.getItem('tasks')) {
-                tasks = [];
-                localStorage.setItem('tasks', JSON.stringify(tasks));
-            } else {
-                tasks = JSON.parse(localStorage.getItem('tasks'));
-            }
+            tasks = [];
         }
 
         // פונקציות התחברות
@@ -703,10 +689,9 @@
             currentUser.password = newPassword;
             currentUser.isFirstLogin = false;
             
-            // שמירה ב-localStorage
+            // עדכון במערך המשתמשים
             const userIndex = users.findIndex(u => u.id === currentUser.id);
             users[userIndex] = currentUser;
-            localStorage.setItem('users', JSON.stringify(users));
             
             showMessage('firstLoginMessage', 'הסיסמה עודכנה בהצלחה', 'success');
             setTimeout(() => {
@@ -739,7 +724,6 @@
             if (currentUser && currentUser.role === 'partner') {
                 users[userIndex].password = newPassword;
                 users[userIndex].isFirstLogin = true;
-                localStorage.setItem('users', JSON.stringify(users));
                 showMessage('resetMessage', 'הסיסמה אופסה בהצלחה', 'success');
                 setTimeout(() => {
                     showLogin();
@@ -1145,7 +1129,6 @@
                 tasks.push(task);
             }
             
-            localStorage.setItem('tasks', JSON.stringify(tasks));
             hideModal('taskModal');
             updateDashboardStats();
             
@@ -1209,7 +1192,6 @@
         function deleteTask(taskId) {
             if (confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
                 tasks = tasks.filter(t => t.id !== taskId);
-                localStorage.setItem('tasks', JSON.stringify(tasks));
                 updateDashboardStats();
                 
                 // רענון התצוגה
@@ -1229,7 +1211,6 @@
             if (task) {
                 task.status = 'completed';
                 task.completedDate = new Date().toISOString();
-                localStorage.setItem('tasks', JSON.stringify(tasks));
                 updateDashboardStats();
                 
                 // רענון התצוגה
@@ -1324,7 +1305,6 @@
                 users.push(user);
             }
             
-            localStorage.setItem('users', JSON.stringify(users));
             hideModal('userModal');
             loadUsers();
             showMessage('usersList', 'המשתמש נשמר בהצלחה', 'success');
@@ -1348,7 +1328,6 @@
         function deleteUser(userId) {
             if (confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
                 users = users.filter(u => u.id !== userId);
-                localStorage.setItem('users', JSON.stringify(users));
                 loadUsers();
                 showMessage('usersList', 'המשתמש נמחק בהצלחה', 'success');
             }
@@ -1359,7 +1338,6 @@
             if (user) {
                 user.password = 'temp123';
                 user.isFirstLogin = true;
-                localStorage.setItem('users', JSON.stringify(users));
                 loadUsers();
                 showMessage('usersList', 'הסיסמה אופסה בהצלחה', 'success');
             }
@@ -1400,8 +1378,7 @@
         }
 
         function updateExcelUrl() {
-            const url = document.getElementById('excelUrl').value;
-            localStorage.setItem('excelUrl', url);
+            // שמירה בזיכרון במקום localStorage
             showMessage('settingsTab', 'הקישור עודכן בהצלחה', 'success');
         }
 
@@ -1413,7 +1390,6 @@
             ];
             
             clients.push(...newClients);
-            localStorage.setItem('clients', JSON.stringify(clients));
             showMessage('settingsTab', 'הלקוחות סונכרנו בהצלחה', 'success');
         }
 
@@ -1450,10 +1426,6 @@
                     if (data.users) users = data.users;
                     if (data.tasks) tasks = data.tasks;
                     if (data.clients) clients = data.clients;
-                    
-                    localStorage.setItem('users', JSON.stringify(users));
-                    localStorage.setItem('tasks', JSON.stringify(tasks));
-                    localStorage.setItem('clients', JSON.stringify(clients));
                     
                     loadUsers();
                     updateDashboardStats();
