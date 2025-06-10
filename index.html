@@ -6,64 +6,240 @@
     <title>מערכת ניהול משימות RM-CPA</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; direction: rtl; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
-        .header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 20px 30px; margin-bottom: 20px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { color: #2c3e50; font-size: 2em; background: linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
         .user-info { display: flex; align-items: center; gap: 15px; }
         .notification-bell { position: relative; cursor: pointer; font-size: 1.5em; color: #667eea; }
-        .notification-count { position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7em; display: flex; align-items: center; justify-content: center; }
-        .auth-container, .main-app { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+        .notification-count {
+            position: absolute; top: -8px; right: -8px; background: #e74c3c; color: white;
+            border-radius: 50%; width: 20px; height: 20px; font-size: 0.7em;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .auth-container, .main-app {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
         .hidden { display: none !important; }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: #2c3e50; font-weight: 600; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 16px; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9); }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
-        .btn { background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px; font-weight: 600; transition: all 0.3s ease; margin: 5px; }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 12px 15px; border: 2px solid #e1e8ed; border-radius: 10px;
+            font-size: 16px; transition: all 0.3s ease; background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-top: 15px; }
+        .checkbox-group input[type="checkbox"] { width: auto; }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none;
+            padding: 12px 25px; border-radius: 10px; cursor: pointer; font-size: 16px;
+            font-weight: 600; transition: all 0.3s ease; margin: 5px;
+        }
+        
         .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4); }
         .btn-secondary { background: linear-gradient(45deg, #95a5a6, #34495e); }
         .btn-danger { background: linear-gradient(45deg, #e74c3c, #c0392b); }
         .btn-success { background: linear-gradient(45deg, #27ae60, #2ecc71); }
-        .nav-tabs { display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 5px; margin-bottom: 30px; }
-        .nav-tab { flex: 1; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; color: #2c3e50; font-weight: 600; }
+        .btn-warning { background: linear-gradient(45deg, #f39c12, #e67e22); }
+        
+        .nav-tabs {
+            display: flex; background: rgba(255, 255, 255, 0.1); border-radius: 15px;
+            padding: 5px; margin-bottom: 30px;
+        }
+        
+        .nav-tab {
+            flex: 1; padding: 15px; text-align: center; border-radius: 10px; cursor: pointer;
+            transition: all 0.3s ease; color: #2c3e50; font-weight: 600;
+        }
+        
         .nav-tab.active { background: white; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
-        .task-form-container { background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        
+        .dashboard-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+            padding: 20px; border-radius: 15px; text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover { transform: translateY(-3px); }
+        .stat-number { font-size: 2em; font-weight: bold; color: #667eea; margin-bottom: 5px; }
+        
+        .task-form-container {
+            background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 30px;
+            margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px; margin-bottom: 20px;
+        }
+        
         .task-list { background: rgba(255, 255, 255, 0.9); border-radius: 15px; padding: 20px; margin-top: 20px; }
-        .task-item { background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 20px; margin-bottom: 15px; transition: all 0.3s ease; }
+        
+        .task-item {
+            background: white; border: 1px solid #e1e8ed; border-radius: 10px; padding: 20px;
+            margin-bottom: 15px; transition: all 0.3s ease; position: relative;
+        }
+        
         .task-item:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
         .task-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         .task-title { font-weight: bold; color: #2c3e50; font-size: 1.2em; flex: 1; }
-        .task-status { padding: 6px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; white-space: nowrap; margin-right: 10px; }
+        
+        .task-status {
+            padding: 6px 12px; border-radius: 20px; font-size: 0.8em;
+            font-weight: bold; white-space: nowrap; margin-right: 10px;
+        }
+        
         .status-not-started { background: #95a5a6; color: white; }
         .status-in-progress { background: #3498db; color: white; }
         .status-waiting-client { background: #f39c12; color: white; }
         .status-partner-review { background: #9b59b6; color: white; }
         .status-completed { background: #27ae60; color: white; }
-        .task-details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        .task-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        .task-details-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px; margin-bottom: 15px; color: #7f8c8d; font-size: 0.9em;
+        }
+        
+        .task-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        
         .filters { background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
         .filters-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end; }
-        .success-message, .error-message { padding: 10px 15px; border-radius: 10px; margin: 10px 0; text-align: center; }
+        
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white; padding: 30px; border-radius: 20px; max-width: 600px;
+            width: 90%; max-height: 80vh; overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #e1e8ed;
+        }
+        
+        .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #7f8c8d; }
+        
+        .success-message, .error-message {
+            padding: 10px 15px; border-radius: 10px; margin: 10px 0; text-align: center;
+        }
+        
         .success-message { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error-message { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .dashboard-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: linear-gradient(45deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)); padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); cursor: pointer; transition: all 0.3s ease; }
-        .stat-card:hover { transform: translateY(-3px); }
-        .stat-number { font-size: 2em; font-weight: bold; color: #667eea; margin-bottom: 5px; }
+        
         .autocomplete-container { position: relative; }
-        .autocomplete-list { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e1e8ed; border-radius: 10px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .autocomplete-list {
+            position: absolute; top: 100%; left: 0; right: 0; background: white;
+            border: 1px solid #e1e8ed; border-radius: 10px; max-height: 200px;
+            overflow-y: auto; z-index: 100; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
         .autocomplete-item { padding: 10px 15px; cursor: pointer; transition: background 0.2s; }
         .autocomplete-item:hover { background: #f8f9fa; }
-        @media (max-width: 768px) { .container { padding: 10px; } .header { flex-direction: column; text-align: center; gap: 15px; } .header h1 { font-size: 1.5em; } .nav-tabs { flex-direction: column; } .dashboard-stats { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } .task-header { flex-direction: column; align-items: flex-start; gap: 10px; } }
+        
+        .comments-section {
+            background: #f8f9fa; border-radius: 10px; padding: 15px; margin-top: 15px;
+        }
+        
+        .comment-item {
+            background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .comment-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 8px; font-size: 0.9em; color: #7f8c8d;
+        }
+        
+        .comment-content { color: #2c3e50; line-height: 1.4; }
+        
+        .notification-panel {
+            position: fixed; top: 80px; left: 20px; width: 350px; max-height: 400px;
+            background: white; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 1000; overflow-y: auto;
+        }
+        
+        .notification-header {
+            padding: 15px 20px; border-bottom: 1px solid #e1e8ed;
+            font-weight: bold; color: #2c3e50;
+        }
+        
+        .notification-item {
+            padding: 15px 20px; border-bottom: 1px solid #f1f1f1;
+            cursor: pointer; transition: background 0.2s;
+        }
+        
+        .notification-item:hover { background: #f8f9fa; }
+        .notification-item.unread { background: #e3f2fd; border-left: 4px solid #2196f3; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .header { flex-direction: column; text-align: center; gap: 15px; }
+            .header h1 { font-size: 1.5em; }
+            .nav-tabs { flex-direction: column; }
+            .dashboard-stats { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .task-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- כותרת -->
         <div class="header">
             <h1>📋 מערכת ניהול משימות RM-CPA</h1>
             <div id="headerInfo" class="hidden">
                 <div class="user-info">
+                    <div class="notification-bell" onclick="toggleNotifications()">
+                        🔔
+                        <span id="notificationCount" class="notification-count hidden">0</span>
+                    </div>
                     <div>
                         <strong id="currentUserName"></strong>
                         <span id="currentUserRole"></span>
@@ -73,16 +249,29 @@
             </div>
         </div>
 
+        <!-- פאנל התראות -->
+        <div id="notificationPanel" class="notification-panel hidden">
+            <div class="notification-header">
+                התראות
+                <button class="btn btn-secondary" style="float: left; padding: 5px 10px; font-size: 0.8em;" onclick="markAllAsRead()">סמן הכל כנקרא</button>
+            </div>
+            <div id="notificationList"></div>
+        </div>
+
         <!-- מסך התחברות -->
         <div id="authScreen" class="auth-container">
             <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">כניסה למערכת</h2>
             <div class="form-group">
                 <label>שם משתמש:</label>
-                <input type="text" id="loginUsername" placeholder="הזן שם משתמש" value="shmuel">
+                <input type="text" id="loginUsername" placeholder="הזן שם משתמש">
             </div>
             <div class="form-group">
                 <label>קוד גישה:</label>
-                <input type="password" id="loginCode" placeholder="הזן קוד גישה" value="123456">
+                <input type="password" id="loginCode" placeholder="הזן קוד גישה">
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">זכור אותי</label>
             </div>
             <button class="btn" onclick="login()">התחבר</button>
             <div id="authMessage"></div>
@@ -95,6 +284,7 @@
                 <div class="nav-tab" onclick="showEmployeeTab('my-tasks')">המשימות שלי</div>
             </div>
 
+            <!-- יצירת משימה - עובד -->
             <div id="employeeCreateTab" class="tab-content">
                 <div class="task-form-container">
                     <h3 style="margin-bottom: 25px; color: #2c3e50;">משימה חדשה</h3>
@@ -118,12 +308,6 @@
                                 <label>סוג עבודה:</label>
                                 <select id="empTaskType" required>
                                     <option value="">בחר סוג עבודה</option>
-                                    <option value="annual-company">דוח שנתי חברה</option>
-                                    <option value="annual-personal">דוח שנתי אישי</option>
-                                    <option value="estimate">משוער</option>
-                                    <option value="ongoing">טיפול שוטף</option>
-                                    <option value="fine-cancellation">ביטול קנסות</option>
-                                    <option value="authority-contact">פניה לרשויות</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -148,6 +332,7 @@
                 </div>
             </div>
 
+            <!-- המשימות שלי - עובד -->
             <div id="employeeMyTasksTab" class="tab-content hidden">
                 <div class="filters">
                     <h3 style="margin-bottom: 15px;">המשימות שלי</h3>
@@ -160,11 +345,21 @@
                             <label>סטטוס:</label>
                             <select id="empFilterStatus" onchange="filterEmployeeTasks()">
                                 <option value="">כל הסטטוסים</option>
-                                <option value="not-started">טרם התחיל</option>
-                                <option value="in-progress">בעבודה</option>
-                                <option value="waiting-client">מחכה לתגובה מהלקוח</option>
-                                <option value="partner-review">הועבר לבדיקת שותף</option>
-                                <option value="completed">הסתיים</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>סוג עבודה:</label>
+                            <select id="empFilterType" onchange="filterEmployeeTasks()">
+                                <option value="">כל הסוגים</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>מיון:</label>
+                            <select id="empSortTasks" onchange="filterEmployeeTasks()">
+                                <option value="due-date-asc">תאריך יעד (קרוב לרחוק)</option>
+                                <option value="due-date-desc">תאריך יעד (רחוק לקרוב)</option>
+                                <option value="created-desc">נוצר לאחרונה</option>
+                                <option value="created-asc">נוצר ראשון</option>
                             </select>
                         </div>
                     </div>
@@ -182,26 +377,84 @@
                 <div class="nav-tab" onclick="showPartnerTab('settings')">הגדרות</div>
             </div>
 
+            <!-- דשבורד שותף -->
             <div id="partnerDashboardTab" class="tab-content">
+                <!-- יצירת משימה - שותף -->
+                <div class="task-form-container">
+                    <h3 style="margin-bottom: 25px; color: #2c3e50;">יצירת משימה חדשה</h3>
+                    <form id="partnerTaskForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>כותרת המשימה:</label>
+                                <input type="text" id="partTaskTitle" required placeholder="תאר בקצרה את המשימה">
+                            </div>
+                            <div class="form-group">
+                                <label>לקוח:</label>
+                                <div class="autocomplete-container">
+                                    <input type="text" id="partTaskClient" required placeholder="התחל להקליד שם לקוח..." oninput="filterClients(this.value, 'partClientList')">
+                                    <div id="partClientList" class="autocomplete-list hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>סוג עבודה:</label>
+                                <select id="partTaskType" required>
+                                    <option value="">בחר סוג עבודה</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>עובד מטפל:</label>
+                                <select id="partTaskAssignee" required>
+                                    <option value="">בחר עובד מטפל</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>תאריך יעד:</label>
+                                <input type="date" id="partTaskDueDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>סטטוס:</label>
+                                <select id="partTaskStatus">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>תיאור המשימה:</label>
+                            <textarea id="partTaskDescription" rows="3" placeholder="פרט על המשימה"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">צור משימה</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearPartnerForm()">נקה טופס</button>
+                    </form>
+                </div>
+
+                <!-- סטטיסטיקות -->
                 <div class="dashboard-stats">
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="filterPartnerTasks('all')">
                         <div class="stat-number" id="totalTasks">0</div>
                         <div>סה"כ משימות</div>
                     </div>
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="filterPartnerTasks('active')">
                         <div class="stat-number" id="activeTasks">0</div>
                         <div>משימות פעילות</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="completedTasks">0</div>
-                        <div>משימות שהושלמו</div>
-                    </div>
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="filterPartnerTasks('overdue')">
                         <div class="stat-number" id="overdueTasks">0</div>
                         <div>משימות באיחור</div>
                     </div>
+                    <div class="stat-card" onclick="filterPartnerTasks('partner-review')">
+                        <div class="stat-number" id="reviewTasks">0</div>
+                        <div>ממתינות לבדיקה</div>
+                    </div>
                 </div>
 
+                <!-- סינון משימות -->
                 <div class="filters">
                     <h3 style="margin-bottom: 15px;">כל המשימות</h3>
                     <div class="filters-row">
@@ -219,11 +472,22 @@
                             <label>סטטוס:</label>
                             <select id="partnerFilterStatus" onchange="filterPartnerTasks()">
                                 <option value="">כל הסטטוסים</option>
-                                <option value="not-started">טרם התחיל</option>
-                                <option value="in-progress">בעבודה</option>
-                                <option value="waiting-client">מחכה לתגובה מהלקוח</option>
-                                <option value="partner-review">הועבר לבדיקת שותף</option>
-                                <option value="completed">הסתיים</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>סוג עבודה:</label>
+                            <select id="partnerFilterType" onchange="filterPartnerTasks()">
+                                <option value="">כל הסוגים</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>מיון:</label>
+                            <select id="partnerSortTasks" onchange="filterPartnerTasks()">
+                                <option value="due-date-asc">תאריך יעד (קרוב לרחוק)</option>
+                                <option value="due-date-desc">תאריך יעד (רחוק לקרוב)</option>
+                                <option value="created-desc">נוצר לאחרונה</option>
+                                <option value="created-asc">נוצר ראשון</option>
+                                <option value="status">לפי סטטוס</option>
                             </select>
                         </div>
                     </div>
@@ -234,14 +498,171 @@
                 </div>
             </div>
 
+            <!-- הגדרות שותף -->
             <div id="partnerSettingsTab" class="tab-content hidden">
-                <h3>הגדרות מערכת</h3>
-                <div style="margin-bottom: 20px;">
-                    <button class="btn btn-success" onclick="addUser()">הוסף משתמש</button>
-                    <button class="btn btn-secondary" onclick="exportData()">יצוא נתונים</button>
+                <div class="nav-tabs" style="margin-bottom: 20px;">
+                    <div class="nav-tab active" onclick="showSettingsTab('users')">ניהול משתמשים</div>
+                    <div class="nav-tab" onclick="showSettingsTab('system')">הגדרות מערכת</div>
+                    <div class="nav-tab" onclick="showSettingsTab('data')">ניהול נתונים</div>
                 </div>
-                <div id="usersList"></div>
+
+                <!-- ניהול משתמשים -->
+                <div id="settingsUsersTab" class="settings-content">
+                    <div style="margin-bottom: 20px;">
+                        <button class="btn btn-success" onclick="showModal('userModal')">הוסף משתמש</button>
+                    </div>
+                    <div id="usersList"></div>
+                </div>
+
+                <!-- הגדרות מערכת -->
+                <div id="settingsSystemTab" class="settings-content hidden">
+                    <h3>הגדרות מערכת</h3>
+                    <div class="form-group">
+                        <label>סוגי עבודה (כל סוג בשורה נפרדת):</label>
+                        <textarea id="workTypes" rows="6">דוח שנתי חברה
+דוח שנתי אישי
+משוער
+טיפול שוטף
+ביטול קנסות
+פניה לרשויות</textarea>
+                        <button class="btn" onclick="updateWorkTypes()">עדכן סוגי עבודה</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>סטטוסי עבודה (כל סטטוס בשורה נפרדת):</label>
+                        <textarea id="workStatuses" rows="5">טרם התחיל
+בעבודה
+מחכה לתגובה מהלקוח
+הועבר לבדיקת שותף
+הסתיים</textarea>
+                        <button class="btn" onclick="updateWorkStatuses()">עדכן סטטוסים</button>
+                    </div>
+                </div>
+
+                <!-- ניהול נתונים -->
+                <div id="settingsDataTab" class="settings-content hidden">
+                    <h3>ניהול נתונים</h3>
+                    <div class="form-group">
+                        <label>רשימת לקוחות - Google Sheets:</label>
+                        <input type="url" id="clientsSheetUrl" placeholder="הזן קישור לקובץ
+                            <input type="url" id="clientsSheetUrl" placeholder="הזן קישור לקובץ רשימת הלקוחות" value="https://docs.google.com/spreadsheets/d/1rZvtny_hfa-7VvV0MzkPMGssLIUUVDm6/edit">
+                        <button class="btn" onclick="updateClientsUrl()">עדכן קישור</button>
+                        <button class="btn btn-success" onclick="syncClients()">סנכרן לקוחות עכשיו</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>גיבוי מערכת - Google Sheets:</label>
+                        <input type="url" id="backupSheetUrl" placeholder="הזן קישור לקובץ הגיבוי" value="https://docs.google.com/spreadsheets/d/1n380H7Wkz8ZB5e8KxmlRUAbvx3EMxK0DMGUyABqokb4/edit">
+                        <button class="btn" onclick="updateBackupUrl()">עדכן קישור</button>
+                        <button class="btn btn-success" onclick="saveToSheets()">גבה לSheets עכשיו</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>יצוא ויבוא נתונים:</label>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-secondary" onclick="exportToExcel()">יצוא לאקסל</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">יבוא מאקסל</button>
+                            <input type="file" id="importFile" accept=".xlsx,.xls,.json" style="display: none;" onchange="importData(event)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>סנכרון אוטומטי:</label>
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-warning" onclick="setupAutoSync()">הפעל סנכרון שבועי</button>
+                            <button class="btn btn-secondary" onclick="disableAutoSync()">בטל סנכרון אוטומטי</button>
+                        </div>
+                        <p style="margin-top: 10px; color: #7f8c8d; font-size: 0.9em;">
+                            הסנכרון השבועי יעדכן את רשימת הלקוחות אוטומטית כל יום ראשון ב-09:00
+                        </p>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal למשתמש -->
+    <div id="userModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">משתמש חדש</h3>
+                <button class="close-btn" onclick="hideModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm">
+                <div class="form-group">
+                    <label>שם מלא:</label>
+                    <input type="text" id="userFullName" required placeholder="שם מלא של המשתמש">
+                </div>
+                <div class="form-group">
+                    <label>שם משתמש:</label>
+                    <input type="text" id="userUsername" required placeholder="שם משתמש ייחודי">
+                </div>
+                <div class="form-group">
+                    <label>תפקיד:</label>
+                    <select id="userRole" required>
+                        <option value="employee">עובד</option>
+                        <option value="partner">שותף</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>אימייל:</label>
+                    <input type="email" id="userEmail" placeholder="כתובת אימייל">
+                </div>
+                <div class="form-group">
+                    <label>קוד גישה:</label>
+                    <input type="password" id="userCode" placeholder="קוד גישה למערכת" required>
+                </div>
+                <button type="submit" class="btn">שמור משתמש</button>
+                <button type="button" class="btn btn-secondary" onclick="hideModal('userModal')">ביטול</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal לעריכת משימה -->
+    <div id="editTaskModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>עריכת משימה</h3>
+                <button class="close-btn" onclick="hideModal('editTaskModal')">&times;</button>
+            </div>
+            <form id="editTaskForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>כותרת המשימה:</label>
+                        <input type="text" id="editTaskTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>סטטוס:</label>
+                        <select id="editTaskStatus" required>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>לקוח:</label>
+                        <input type="text" id="editTaskClient" required>
+                    </div>
+                    <div class="form-group">
+                        <label>תאריך יעד:</label>
+                        <input type="date" id="editTaskDueDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>סוג עבודה:</label>
+                    <select id="editTaskType" required>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>תיאור המשימה:</label>
+                    <textarea id="editTaskDescription" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn">עדכן משימה</button>
+                <button type="button" class="btn btn-secondary" onclick="hideModal('editTaskModal')">ביטול</button>
+            </form>
         </div>
     </div>
 
@@ -251,26 +672,43 @@
         let users = [];
         let tasks = [];
         let clients = [];
+        let notifications = [];
+        let currentEditTaskId = null;
+        let currentEditUserId = null;
+        let workTypes = ['דוח שנתי חברה', 'דוח שנתי אישי', 'משוער', 'טיפול שוטף', 'ביטול קנסות', 'פניה לרשויות'];
+        let workStatuses = ['טרם התחיל', 'בעבודה', 'מחכה לתגובה מהלקוח', 'הועבר לבדיקת שותף', 'הסתיים'];
+        let autoSyncEnabled = false;
 
         // נתונים ראשוניים
         function initializeData() {
             users = [
-                { id: 1, username: 'shmuel', fullName: 'שמואל', role: 'partner', email: 'shmuel@rm-cpa.co.il', code: '123456' }
+                {
+                    id: 1,
+                    username: 'shmuel',
+                    fullName: 'שמואל',
+                    role: 'partner',
+                    email: 'shmuel@rm-cpa.co.il',
+                    code: '123456'
+                }
             ];
 
             clients = [
                 { id: 1, name: 'חברת ABC בע"מ', contact: 'יוסי כהן', phone: '050-1234567' },
                 { id: 2, name: 'משרד XYZ עו"ד', contact: 'שרה לוי', phone: '052-9876543' },
-                { id: 3, name: 'עסק 123 השקעות', contact: 'דוד אברהם', phone: '054-5555555' }
+                { id: 3, name: 'עסק 123 השקעות', contact: 'דוד אברהם', phone: '054-5555555' },
+                { id: 4, name: 'חברת DEF טכנולוגיות', contact: 'מרים כהן', phone: '053-7777777' },
+                { id: 5, name: 'משרד GHI יעוץ', contact: 'אברהם לוי', phone: '052-8888888' }
             ];
 
             tasks = [];
+            notifications = [];
         }
 
-        // התחברות
+        // פונקציות התחברות
         function login() {
             const username = document.getElementById('loginUsername').value;
             const code = document.getElementById('loginCode').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
             
             if (!username || !code) {
                 showMessage('authScreen', 'אנא הזן שם משתמש וקוד גישה', 'error');
@@ -281,6 +719,16 @@
             
             if (user) {
                 currentUser = user;
+                
+                if (rememberMe) {
+                    localStorage.setItem('rmcpa-remember', JSON.stringify({
+                        username: username,
+                        code: code
+                    }));
+                } else {
+                    localStorage.removeItem('rmcpa-remember');
+                }
+                
                 showMainApp();
             } else {
                 showMessage('authScreen', 'שם משתמש או קוד גישה שגויים', 'error');
@@ -289,10 +737,18 @@
 
         function logout() {
             currentUser = null;
+            localStorage.removeItem('rmcpa-remember');
             document.getElementById('employeeApp').classList.add('hidden');
             document.getElementById('partnerApp').classList.add('hidden');
             document.getElementById('headerInfo').classList.add('hidden');
             document.getElementById('authScreen').classList.remove('hidden');
+            clearLoginForm();
+        }
+
+        function clearLoginForm() {
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginCode').value = '';
+            document.getElementById('rememberMe').checked = false;
         }
 
         function showMainApp() {
@@ -305,15 +761,283 @@
             if (currentUser.role === 'employee') {
                 document.getElementById('employeeApp').classList.remove('hidden');
                 document.getElementById('partnerApp').classList.add('hidden');
-                setTodayDate();
+                setTodayDate('empTaskDueDate');
+                showEmployeeTab('create');
+                updateEmployeeTasksCounter();
             } else {
                 document.getElementById('partnerApp').classList.remove('hidden');
                 document.getElementById('employeeApp').classList.add('hidden');
+                setTodayDate('partTaskDueDate');
+                showPartnerTab('dashboard');
                 updatePartnerStats();
-                loadUsers();
+                loadPartnerEmployeeOptions();
+            }
+            
+            updateFormOptions();
+            updateNotifications();
+        }
+
+        function setTodayDate(elementId) {
+            const today = new Date().toISOString().split('T')[0];
+            const element = document.getElementById(elementId);
+            if (element && !element.value) {
+                element.value = today;
             }
         }
 
+        // עדכון אפשרויות בטפסים
+        function updateFormOptions() {
+            // עדכון סוגי עבודה
+            const typeSelects = ['empTaskType', 'partTaskType', 'editTaskType', 'empFilterType', 'partnerFilterType'];
+            typeSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    const firstOption = select.querySelector('option:first-child');
+                    select.innerHTML = '';
+                    if (firstOption) select.appendChild(firstOption);
+                    
+                    workTypes.forEach(type => {
+                        const option = document.createElement('option');
+                        option.value = convertToValue(type);
+                        option.textContent = type;
+                        if (option.value === currentValue) option.selected = true;
+                        select.appendChild(option);
+                    });
+                }
+            });
+
+            // עדכון סטטוסים
+            const statusSelects = ['partTaskStatus', 'editTaskStatus', 'empFilterStatus', 'partnerFilterStatus'];
+            statusSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    const currentValue = select.value;
+                    const firstOption = select.querySelector('option:first-child');
+                    select.innerHTML = '';
+                    if (firstOption) select.appendChild(firstOption);
+                    
+                    workStatuses.forEach(status => {
+                        const option = document.createElement('option');
+                        option.value = convertToValue(status);
+                        option.textContent = status;
+                        if (option.value === currentValue) option.selected = true;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        function convertToValue(text) {
+            return text.replace(/\s+/g, '-').replace(/[^\w\-]/g, '').toLowerCase();
+        }
+
+        function convertFromValue(value) {
+            const typeMap = {
+                'annual-company': 'דוח שנתי חברה',
+                'annual-personal': 'דוח שנתי אישי',
+                'estimate': 'משוער',
+                'ongoing': 'טיפול שוטף',
+                'fine-cancellation': 'ביטול קנסות',
+                'authority-contact': 'פניה לרשויות',
+                'not-started': 'טרם התחיל',
+                'in-progress': 'בעבודה',
+                'waiting-client': 'מחכה לתגובה מהלקוח',
+                'partner-review': 'הועבר לבדיקת שותף',
+                'completed': 'הסתיים'
+            };
+            return typeMap[value] || value;
+        }
+
+        // סינון לקוחות (autocomplete)
+        function filterClients(searchTerm, listId) {
+            const list = document.getElementById(listId);
+            
+            if (!searchTerm || searchTerm.length < 2) {
+                list.classList.add('hidden');
+                return;
+            }
+            
+            const filteredClients = clients.filter(client => 
+                client.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+            
+            list.innerHTML = '';
+            
+            if (filteredClients.length === 0) {
+                list.classList.add('hidden');
+                return;
+            }
+            
+            filteredClients.forEach(client => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                item.textContent = client.name;
+                item.onclick = () => {
+                    if (listId === 'empClientList') {
+                        document.getElementById('empTaskClient').value = client.name;
+                    } else if (listId === 'partClientList') {
+                        document.getElementById('partTaskClient').value = client.name;
+                    }
+                    list.classList.add('hidden');
+                };
+                list.appendChild(item);
+            });
+            
+            list.classList.remove('hidden');
+        }
+
+        // פונקציות עזר כלליות
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('he-IL');
+        }
+
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('he-IL');
+        }
+
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
+            messageDiv.textContent = message;
+            
+            container.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 3000);
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            if (modalId === 'userModal') {
+                currentEditUserId = null;
+                document.getElementById('userForm').reset();
+                document.getElementById('userModalTitle').textContent = 'משתמש חדש';
+            }
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // מיון משימות
+        function sortTasks(tasks, sortBy) {
+            switch(sortBy) {
+                case 'due-date-asc':
+                    tasks.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+                    break;
+                case 'due-date-desc':
+                    tasks.sort((a, b) => new Date(b.dueDate) - new Date(a.dueDate));
+                    break;
+                case 'created-asc':
+                    tasks.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+                    break;
+                case 'created-desc':
+                    tasks.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
+                    break;
+                case 'status':
+                    const statusOrder = { 'partner-review': 1, 'waiting-client': 2, 'in-progress': 3, 'not-started': 4, 'completed': 5 };
+                    tasks.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
+                    break;
+            }
+        }
+
+        // יצירת אלמנט משימה
+        function createTaskElement(task, userType) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-item';
+            
+            const assignedUser = users.find(u => u.id === task.assignedTo);
+            const createdUser = users.find(u => u.id === task.createdBy);
+            
+            const statusClass = `status-${task.status.replace(/[^a-z0-9]/gi, '-')}`;
+            const statusText = convertFromValue(task.status);
+            const typeText = convertFromValue(task.type);
+            
+            const isOverdue = task.status !== 'completed' && new Date(task.dueDate) < new Date();
+            const hasUnreadComments = task.comments && task.comments.some(c => !c.isRead && c.authorId !== currentUser.id);
+            
+            taskDiv.innerHTML = `
+                <div class="task-header">
+                    <div class="task-title">
+                        ${task.title}
+                        ${hasUnreadComments ? ' 💬' : ''}
+                        ${isOverdue ? ' ⚠️' : ''}
+                    </div>
+                    <div class="task-status ${statusClass}">${statusText}</div>
+                </div>
+                
+                <div class="task-details-grid">
+                    <div><strong>לקוח:</strong> ${task.client}</div>
+                    <div><strong>סוג עבודה:</strong> ${typeText}</div>
+                    <div><strong>תאריך יעד:</strong> ${formatDate(task.dueDate)}</div>
+                    ${userType === 'partner' ? `<div><strong>עובד מטפל:</strong> ${assignedUser ? assignedUser.fullName : 'לא ידוע'}</div>` : ''}
+                    <div><strong>נוצר על ידי:</strong> ${createdUser ? createdUser.fullName : 'לא ידוע'}</div>
+                    <div><strong>נוצר בתאריך:</strong> ${formatDate(task.createdDate)}</div>
+                </div>
+                
+                ${task.description ? `
+                    <div style="margin-top: 10px; color: #7f8c8d;">
+                        <strong>תיאור:</strong> ${task.description}
+                    </div>
+                ` : ''}
+                
+                <div class="task-actions">
+                    ${userType === 'employee' ? `
+                        <button class="btn" onclick="updateTaskStatus(${task.id})">עדכן סטטוס</button>
+                        <button class="btn btn-secondary" onclick="addTaskComment(${task.id})">הוסף הערה</button>
+                    ` : `
+                        <button class="btn" onclick="editTask(${task.id})">עריכה</button>
+                        <button class="btn btn-secondary" onclick="addTaskComment(${task.id})">הוסף הערה</button>
+                        <button class="btn btn-danger" onclick="deleteTask(${task.id})">מחק</button>
+                    `}
+                </div>
+                
+                ${task.comments && task.comments.length > 0 ? createCommentsSection(task) : ''}
+            `;
+            
+            if (isOverdue) {
+                taskDiv.style.borderLeft = '4px solid #e74c3c';
+            }
+            
+            if (hasUnreadComments) {
+                taskDiv.style.background = 'linear-gradient(to right, #fff3cd, #ffffff)';
+            }
+            
+            return taskDiv;
+        }
+
+        function createCommentsSection(task) {
+            const commentsHtml = task.comments.map(comment => `
+                <div class="comment-item ${!comment.isRead && comment.authorId !== currentUser.id ? 'unread' : ''}">
+                    <div class="comment-header">
+                        <strong>${comment.author}</strong>
+                        <span>${formatDateTime(comment.date)}</span>
+                    </div>
+                    <div class="comment-content">${comment.content}</div>
+                    ${currentUser.role === 'partner' && comment.authorId !== currentUser.id && !comment.isRead ? `
+                        <button class="btn btn-secondary" style="margin-top: 8px; padding: 4px 8px; font-size: 0.8em;" onclick="markCommentAsRead(${task.id}, ${comment.id})">
+                            סמן כנקרא
+                        </button>
+                    ` : ''}
+                </div>
+            `).join('');
+            
+            return `
+                <div class="comments-section">
+                    <h4 style="margin-bottom: 15px; color: #2c3e50;">הערות והודעות</h4>
+                    ${commentsHtml}
+                </div>
+            `;
+        }
         // פונקציות עובד
         function showEmployeeTab(tabName) {
             document.querySelectorAll('#employeeApp .tab-content').forEach(tab => {
@@ -334,77 +1058,73 @@
             }
         }
 
-        function setTodayDate() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('empTaskDueDate').value = today;
-        }
-
+        // יצירת משימה - עובד
         document.getElementById('employeeTaskForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            createEmployeeTask();
+        });
+
+        function createEmployeeTask() {
+            const title = document.getElementById('empTaskTitle').value;
+            const client = document.getElementById('empTaskClient').value;
+            const type = document.getElementById('empTaskType').value;
+            const dueDate = document.getElementById('empTaskDueDate').value;
+            const description = document.getElementById('empTaskDescription').value;
+            const notes = document.getElementById('empTaskNotes').value;
             
+            if (!title || !client || !type || !dueDate) {
+                showMessage('employeeCreateTab', 'אנא מלא את כל השדות הנדרשים', 'error');
+                return;
+            }
+
             const task = {
                 id: Date.now(),
-                title: document.getElementById('empTaskTitle').value,
-                client: document.getElementById('empTaskClient').value,
-                type: document.getElementById('empTaskType').value,
-                dueDate: document.getElementById('empTaskDueDate').value,
-                description: document.getElementById('empTaskDescription').value,
-                notes: document.getElementById('empTaskNotes').value,
+                title,
+                client,
+                type,
+                dueDate,
+                description,
+                notes,
                 status: 'not-started',
                 assignedTo: currentUser.id,
                 createdBy: currentUser.id,
-                createdDate: new Date().toISOString()
+                createdDate: new Date().toISOString(),
+                lastModified: new Date().toISOString(),
+                comments: notes ? [{
+                    id: Date.now(),
+                    author: currentUser.fullName,
+                    authorId: currentUser.id,
+                    content: notes,
+                    date: new Date().toISOString(),
+                    isRead: false
+                }] : []
             };
 
             tasks.push(task);
+            addNotification(`משימה חדשה נוצרה: ${title}`, 'new-task', task.id);
             clearEmployeeForm();
             showMessage('employeeCreateTab', 'המשימה נוצרה בהצלחה!', 'success');
-        });
+            saveData();
+        }
 
         function clearEmployeeForm() {
             document.getElementById('employeeTaskForm').reset();
-            setTodayDate();
-        }
-
-        function filterClients(searchTerm, listId) {
-            const list = document.getElementById(listId);
-            
-            if (!searchTerm || searchTerm.length < 2) {
-                list.classList.add('hidden');
-                return;
-            }
-            
-            const filteredClients = clients.filter(client => 
-                client.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            
-            list.innerHTML = '';
-            
-            filteredClients.forEach(client => {
-                const item = document.createElement('div');
-                item.className = 'autocomplete-item';
-                item.textContent = client.name;
-                item.onclick = () => {
-                    document.getElementById('empTaskClient').value = client.name;
-                    list.classList.add('hidden');
-                };
-                list.appendChild(item);
-            });
-            
-            list.classList.remove('hidden');
+            setTodayDate('empTaskDueDate');
         }
 
         function filterEmployeeTasks() {
-            const myTasks = tasks.filter(task => task.assignedTo === currentUser.id);
             const searchTerm = document.getElementById('empSearchTasks').value.toLowerCase();
             const statusFilter = document.getElementById('empFilterStatus').value;
+            const typeFilter = document.getElementById('empFilterType').value;
+            const sortBy = document.getElementById('empSortTasks').value;
             
-            let filteredTasks = myTasks;
+            let filteredTasks = tasks.filter(task => task.assignedTo === currentUser.id);
             
             if (searchTerm) {
                 filteredTasks = filteredTasks.filter(task => 
                     task.title.toLowerCase().includes(searchTerm) ||
-                    task.client.toLowerCase().includes(searchTerm)
+                    task.client.toLowerCase().includes(searchTerm) ||
+                    task.description.toLowerCase().includes(searchTerm)
                 );
             }
             
@@ -412,7 +1132,22 @@
                 filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
             }
             
+            if (typeFilter) {
+                filteredTasks = filteredTasks.filter(task => task.type === typeFilter);
+            }
+            
+            sortTasks(filteredTasks, sortBy);
             displayTasks(filteredTasks, 'employeeTasksList', 'employee');
+            updateEmployeeTasksCounter();
+        }
+
+        function updateEmployeeTasksCounter() {
+            const myTasks = tasks.filter(task => task.assignedTo === currentUser.id);
+            const activeTasks = myTasks.filter(task => task.status !== 'completed').length;
+            
+            const tabText = `המשימות שלי${activeTasks > 0 ? ` (${activeTasks})` : ''}`;
+            const tabs = document.querySelectorAll('#employeeApp .nav-tab');
+            if (tabs[1]) tabs[1].textContent = tabText;
         }
 
         // פונקציות שותף
@@ -428,55 +1163,150 @@
             if (tabName === 'dashboard') {
                 document.getElementById('partnerDashboardTab').classList.remove('hidden');
                 event.target.classList.add('active');
-                filterPartnerTasks();
+                loadPartnerDashboard();
             } else if (tabName === 'settings') {
                 document.getElementById('partnerSettingsTab').classList.remove('hidden');
                 event.target.classList.add('active');
+                loadPartnerSettings();
             }
+        }
+
+        function loadPartnerDashboard() {
+            updatePartnerStats();
+            loadPartnerEmployeeOptions();
+            filterPartnerTasks();
+        }
+
+        function loadPartnerEmployeeOptions() {
+            const selects = ['partTaskAssignee', 'partnerFilterEmployee'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.innerHTML = '<option value="">בחר עובד מטפל</option>';
+                    const employees = users.filter(u => u.role === 'employee');
+                    employees.forEach(emp => {
+                        const option = document.createElement('option');
+                        option.value = emp.id;
+                        option.textContent = emp.fullName;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+
+        // יצירת משימה - שותף
+        document.getElementById('partnerTaskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            createPartnerTask();
+        });
+
+        function createPartnerTask() {
+            const title = document.getElementById('partTaskTitle').value;
+            const client = document.getElementById('partTaskClient').value;
+            const type = document.getElementById('partTaskType').value;
+            const assignee = document.getElementById('partTaskAssignee').value;
+            const dueDate = document.getElementById('partTaskDueDate').value;
+            const status = document.getElementById('partTaskStatus').value;
+            const description = document.getElementById('partTaskDescription').value;
+            
+            if (!title || !client || !type || !assignee || !dueDate) {
+                showMessage('partnerDashboardTab', 'אנא מלא את כל השדות הנדרשים', 'error');
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                title,
+                client,
+                type,
+                dueDate,
+                description,
+                status: status || 'not-started',
+                assignedTo: parseInt(assignee),
+                createdBy: currentUser.id,
+                createdDate: new Date().toISOString(),
+                lastModified: new Date().toISOString(),
+                comments: []
+            };
+
+            tasks.push(task);
+            addNotification(`השותף ${currentUser.fullName} יצר משימה חדשה: ${title}`, 'partner-task', task.id, parseInt(assignee));
+            clearPartnerForm();
+            showMessage('partnerDashboardTab', 'המשימה נוצרה בהצלחה!', 'success');
+            updatePartnerStats();
+            filterPartnerTasks();
+            saveData();
+        }
+
+        function clearPartnerForm() {
+            document.getElementById('partnerTaskForm').reset();
+            setTodayDate('partTaskDueDate');
         }
 
         function updatePartnerStats() {
-            document.getElementById('totalTasks').textContent = tasks.length;
-            document.getElementById('activeTasks').textContent = tasks.filter(t => t.status !== 'completed').length;
-            document.getElementById('completedTasks').textContent = tasks.filter(t => t.status === 'completed').length;
-            document.getElementById('overdueTasks').textContent = tasks.filter(t => 
+            const totalTasks = tasks.length;
+            const activeTasks = tasks.filter(t => t.status !== 'completed').length;
+            const overdueTasks = tasks.filter(t => 
                 t.status !== 'completed' && new Date(t.dueDate) < new Date()
             ).length;
+            const reviewTasks = tasks.filter(t => t.status === 'partner-review').length;
+            
+            document.getElementById('totalTasks').textContent = totalTasks;
+            document.getElementById('activeTasks').textContent = activeTasks;
+            document.getElementById('overdueTasks').textContent = overdueTasks;
+            document.getElementById('reviewTasks').textContent = reviewTasks;
         }
 
-        function filterPartnerTasks() {
-            const searchTerm = document.getElementById('partnerSearchTasks').value.toLowerCase();
-            const employeeFilter = document.getElementById('partnerFilterEmployee').value;
-            const statusFilter = document.getElementById('partnerFilterStatus').value;
-            
+        function filterPartnerTasks(quickFilter = null) {
             let filteredTasks = [...tasks];
             
-            if (searchTerm) {
-                filteredTasks = filteredTasks.filter(task => 
-                    task.title.toLowerCase().includes(searchTerm) ||
-                    task.client.toLowerCase().includes(searchTerm)
-                );
-            }
-            
-            if (employeeFilter) {
-                filteredTasks = filteredTasks.filter(task => task.assignedTo == employeeFilter);
-            }
-            
-            if (statusFilter) {
-                filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
+            if (quickFilter) {
+                switch(quickFilter) {
+                    case 'active':
+                        filteredTasks = filteredTasks.filter(t => t.status !== 'completed');
+                        break;
+                    case 'overdue':
+                        filteredTasks = filteredTasks.filter(t => 
+                            t.status !== 'completed' && new Date(t.dueDate) < new Date()
+                        );
+                        break;
+                    case 'partner-review':
+                        filteredTasks = filteredTasks.filter(t => t.status === 'partner-review');
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                const searchTerm = document.getElementById('partnerSearchTasks').value.toLowerCase();
+                const employeeFilter = document.getElementById('partnerFilterEmployee').value;
+                const statusFilter = document.getElementById('partnerFilterStatus').value;
+                const typeFilter = document.getElementById('partnerFilterType').value;
+                const sortBy = document.getElementById('partnerSortTasks').value;
+                
+                if (searchTerm) {
+                    filteredTasks = filteredTasks.filter(task => 
+                        task.title.toLowerCase().includes(searchTerm) ||
+                        task.client.toLowerCase().includes(searchTerm) ||
+                        task.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                if (employeeFilter) {
+                    filteredTasks = filteredTasks.filter(task => task.assignedTo == employeeFilter);
+                }
+                
+                if (statusFilter) {
+                    filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
+                }
+                
+                if (typeFilter) {
+                    filteredTasks = filteredTasks.filter(task => task.type === typeFilter);
+                }
+                
+                sortTasks(filteredTasks, sortBy);
             }
             
             displayTasks(filteredTasks, 'partnerTasksList', 'partner');
-            
-            // עדכון סינון עובדים
-            const select = document.getElementById('partnerFilterEmployee');
-            select.innerHTML = '<option value="">כל העובדים</option>';
-            users.filter(u => u.role === 'employee').forEach(emp => {
-                const option = document.createElement('option');
-                option.value = emp.id;
-                option.textContent = emp.fullName;
-                select.appendChild(option);
-            });
         }
 
         function displayTasks(tasksToDisplay, containerId, userType) {
@@ -489,42 +1319,12 @@
             }
             
             tasksToDisplay.forEach(task => {
-                const assignedUser = users.find(u => u.id === task.assignedTo);
-                const createdUser = users.find(u => u.id === task.createdBy);
-                const isOverdue = task.status !== 'completed' && new Date(task.dueDate) < new Date();
-                
-                const taskDiv = document.createElement('div');
-                taskDiv.className = 'task-item';
-                if (isOverdue) taskDiv.style.borderLeft = '4px solid #e74c3c';
-                
-                taskDiv.innerHTML = `
-                    <div class="task-header">
-                        <div class="task-title">${task.title} ${isOverdue ? '⚠️' : ''}</div>
-                        <div class="task-status status-${task.status}">${getStatusText(task.status)}</div>
-                    </div>
-                    <div class="task-details-grid">
-                        <div><strong>לקוח:</strong> ${task.client}</div>
-                        <div><strong>סוג עבודה:</strong> ${getTypeText(task.type)}</div>
-                        <div><strong>תאריך יעד:</strong> ${formatDate(task.dueDate)}</div>
-                        ${userType === 'partner' ? `<div><strong>עובד מטפל:</strong> ${assignedUser ? assignedUser.fullName : 'לא ידוע'}</div>` : ''}
-                        <div>
-                        <div><strong>נוצר על ידי:</strong> ${createdUser ? createdUser.fullName : 'לא ידוע'}</div>
-                    </div>
-                    ${task.description ? `<div style="margin-top: 10px;"><strong>תיאור:</strong> ${task.description}</div>` : ''}
-                    ${task.notes ? `<div style="margin-top: 5px;"><strong>הערות:</strong> ${task.notes}</div>` : ''}
-                    <div class="task-actions">
-                        ${userType === 'employee' ? `
-                            <button class="btn" onclick="updateTaskStatus(${task.id})">עדכן סטטוס</button>
-                        ` : `
-                            <button class="btn" onclick="editTask(${task.id})">עריכה</button>
-                            <button class="btn btn-danger" onclick="deleteTask(${task.id})">מחק</button>
-                        `}
-                    </div>
-                `;
-                container.appendChild(taskDiv);
+                const taskElement = createTaskElement(task, userType);
+                container.appendChild(taskElement);
             });
         }
 
+        // פונקציות משימות מתקדמות
         function updateTaskStatus(taskId) {
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
@@ -537,14 +1337,89 @@
                 { value: 'completed', text: 'הסתיים' }
             ];
             
-            const newStatus = prompt(`בחר סטטוס חדש:\n\n` + 
+            const newStatus = prompt(`בחר סטטוס חדש עבור: ${task.title}\n\n` + 
                 statuses.map((s, i) => `${i + 1}. ${s.text}`).join('\n') + 
-                `\n\nהזן מספר (1-5):`);
+                `\n\nסטטוס נוכחי: ${convertFromValue(task.status)}\n\nהזן מספר (1-5):`);
             
             if (newStatus && newStatus >= 1 && newStatus <= 5) {
-                task.status = statuses[newStatus - 1].value;
+                const selectedStatus = statuses[newStatus - 1];
+                task.status = selectedStatus.value;
+                task.lastModified = new Date().toISOString();
+                
+                if (!task.comments) task.comments = [];
+                task.comments.push({
+                    id: Date.now(),
+                    author: currentUser.fullName,
+                    authorId: currentUser.id,
+                    content: `סטטוס עודכן ל: ${selectedStatus.text}`,
+                    date: new Date().toISOString(),
+                    isRead: false
+                });
+                
+                if (currentUser.role === 'employee') {
+                    addNotification(`העובד ${currentUser.fullName} עדכן סטטוס למשימה: ${task.title}`, 'status-update', taskId);
+                }
+                
                 filterEmployeeTasks();
+                saveData();
                 showMessage('employeeMyTasksTab', 'הסטטוס עודכן בהצלחה', 'success');
+            }
+        }
+
+        function addTaskComment(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const comment = prompt(`הוסף הערה למשימה: ${task.title}`);
+            if (!comment || comment.trim() === '') return;
+            
+            if (!task.comments) task.comments = [];
+            
+            const newComment = {
+                id: Date.now(),
+                author: currentUser.fullName,
+                authorId: currentUser.id,
+                content: comment.trim(),
+                date: new Date().toISOString(),
+                isRead: false
+            };
+            
+            task.comments.push(newComment);
+            task.lastModified = new Date().toISOString();
+            
+            if (currentUser.role === 'employee') {
+                addNotification(`הערה חדשה במשימה: ${task.title}`, 'new-comment', taskId);
+            } else {
+                const assignedUser = users.find(u => u.id === task.assignedTo);
+                if (assignedUser) {
+                    addNotification(`השותף הגיב על המשימה: ${task.title}`, 'partner-reply', taskId, task.assignedTo);
+                }
+            }
+            
+            if (currentUser.role === 'employee') {
+                filterEmployeeTasks();
+            } else {
+                filterPartnerTasks();
+            }
+            
+            saveData();
+            showMessage(currentUser.role === 'employee' ? 'employeeMyTasksTab' : 'partnerDashboardTab', 'ההערה נוספה בהצלחה', 'success');
+        }
+
+        function markCommentAsRead(taskId, commentId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task || !task.comments) return;
+            
+            const comment = task.comments.find(c => c.id === commentId);
+            if (comment) {
+                comment.isRead = true;
+                task.lastModified = new Date().toISOString();
+                
+                filterPartnerTasks();
+                saveData();
+                
+                notifications = notifications.filter(n => !(n.type === 'new-comment' && n.taskId === taskId));
+                updateNotifications();
             }
         }
 
@@ -552,28 +1427,86 @@
             const task = tasks.find(t => t.id === taskId);
             if (!task) return;
             
-            const newTitle = prompt('כותרת חדשה:', task.title);
-            if (newTitle) {
-                task.title = newTitle;
-                filterPartnerTasks();
-                updatePartnerStats();
-                showMessage('partnerDashboardTab', 'המשימה עודכנה בהצלחה', 'success');
+            currentEditTaskId = taskId;
+            
+            document.getElementById('editTaskTitle').value = task.title;
+            document.getElementById('editTaskStatus').value = task.status;
+            document.getElementById('editTaskClient').value = task.client;
+            document.getElementById('editTaskDueDate').value = task.dueDate.split('T')[0];
+            document.getElementById('editTaskType').value = task.type;
+            document.getElementById('editTaskDescription').value = task.description || '';
+            
+            updateFormOptions();
+            showModal('editTaskModal');
+        }
+
+        document.getElementById('editTaskForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const task = tasks.find(t => t.id === currentEditTaskId);
+            if (!task) return;
+            
+            task.title = document.getElementById('editTaskTitle').value;
+            task.status = document.getElementById('editTaskStatus').value;
+            task.client = document.getElementById('editTaskClient').value;
+            task.dueDate = document.getElementById('editTaskDueDate').value;
+            task.type = document.getElementById('editTaskType').value;
+            task.description = document.getElementById('editTaskDescription').value;
+            task.lastModified = new Date().toISOString();
+            
+            hideModal('editTaskModal');
+            filterPartnerTasks();
+            updatePartnerStats();
+            saveData();
+            
+            showMessage('partnerDashboardTab', 'המשימה עודכנה בהצלחה', 'success');
+        });
+
+        function deleteTask(taskId) {
+            if (!confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) return;
+            
+            tasks = tasks.filter(t => t.id !== taskId);
+            notifications = notifications.filter(n => n.taskId !== taskId);
+            
+            filterPartnerTasks();
+            updatePartnerStats();
+            updateNotifications();
+            saveData();
+            
+            showMessage('partnerDashboardTab', 'המשימה נמחקה בהצלחה', 'success');
+        }
+        // פונקציות הגדרות שותף
+        function showSettingsTab(tabName) {
+            document.querySelectorAll('.settings-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            document.querySelectorAll('#partnerSettingsTab .nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`settings${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).classList.remove('hidden');
+            event.target.classList.add('active');
+            
+            if (tabName === 'users') {
+                loadUsers();
             }
         }
 
-        function deleteTask(taskId) {
-            if (confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
-                tasks = tasks.filter(t => t.id !== taskId);
-                filterPartnerTasks();
-                updatePartnerStats();
-                showMessage('partnerDashboardTab', 'המשימה נמחקה בהצלחה', 'success');
-            }
+        function loadPartnerSettings() {
+            loadUsers();
+            showSettingsTab('users');
         }
 
         // ניהול משתמשים
         function loadUsers() {
             const container = document.getElementById('usersList');
             container.innerHTML = '';
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #7f8c8d;">אין משתמשים</p>';
+                return;
+            }
             
             users.forEach(user => {
                 const userDiv = document.createElement('div');
@@ -585,12 +1518,14 @@
                             ${user.role === 'partner' ? 'שותף' : 'עובד'}
                         </div>
                     </div>
-                    <div style="color: #7f8c8d; margin-bottom: 15px;">
+                    <div class="task-details-grid">
                         <div><strong>שם משתמש:</strong> ${user.username}</div>
                         <div><strong>אימייל:</strong> ${user.email || 'לא הוגדר'}</div>
+                        <div><strong>קוד גישה:</strong> ${'*'.repeat(user.code.length)}</div>
                     </div>
                     <div class="task-actions">
                         <button class="btn" onclick="editUser(${user.id})">עריכה</button>
+                        <button class="btn btn-secondary" onclick="resetUserCode(${user.id})">איפוס קוד</button>
                         ${user.id !== currentUser.id ? `<button class="btn btn-danger" onclick="deleteUser(${user.id})">מחיקה</button>` : ''}
                     </div>
                 `;
@@ -598,167 +1533,452 @@
             });
         }
 
-        function addUser() {
-            const fullName = prompt('שם מלא:');
-            if (!fullName) return;
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveUser();
+        });
+
+        function saveUser() {
+            const fullName = document.getElementById('userFullName').value;
+            const username = document.getElementById('userUsername').value;
+            const role = document.getElementById('userRole').value;
+            const email = document.getElementById('userEmail').value;
+            const code = document.getElementById('userCode').value;
             
-            const username = prompt('שם משתמש:');
-            if (!username) return;
-            
-            const role = confirm('האם זה שותף? (ביטול = עובד)') ? 'partner' : 'employee';
-            const email = prompt('אימייל (אופציונלי):') || '';
-            const code = prompt('קוד גישה:');
-            if (!code) return;
-            
-            if (users.some(u => u.username === username)) {
-                alert('שם המשתמש כבר קיים');
+            if (!fullName || !username || !role || !code) {
+                showMessage('userModal', 'אנא מלא את כל השדות הנדרשים', 'error');
                 return;
             }
             
-            users.push({
-                id: Date.now(),
+            if (users.some(u => u.username === username && u.id !== currentEditUserId)) {
+                showMessage('userModal', 'שם המשתמש כבר קיים', 'error');
+                return;
+            }
+            
+            const user = {
+                id: currentEditUserId || Date.now(),
                 fullName,
                 username,
                 role,
                 email,
                 code
-            });
+            };
             
+            if (currentEditUserId) {
+                const index = users.findIndex(u => u.id === currentEditUserId);
+                users[index] = user;
+            } else {
+                users.push(user);
+            }
+            
+            hideModal('userModal');
             loadUsers();
-            showMessage('partnerSettingsTab', 'המשתמש נוסף בהצלחה', 'success');
+            loadPartnerEmployeeOptions();
+            saveData();
+            showMessage('settingsUsersTab', 'המשתמש נשמר בהצלחה', 'success');
         }
 
         function editUser(userId) {
             const user = users.find(u => u.id === userId);
             if (!user) return;
             
-            const newName = prompt('שם מלא:', user.fullName);
-            if (newName) {
-                user.fullName = newName;
-                loadUsers();
-                showMessage('partnerSettingsTab', 'המשתמש עודכן בהצלחה', 'success');
-            }
+            currentEditUserId = userId;
+            
+            document.getElementById('userFullName').value = user.fullName;
+            document.getElementById('userUsername').value = user.username;
+            document.getElementById('userRole').value = user.role;
+            document.getElementById('userEmail').value = user.email || '';
+            document.getElementById('userCode').value = user.code;
+            
+            document.getElementById('userModalTitle').textContent = 'עריכת משתמש';
+            showModal('userModal');
         }
 
         function deleteUser(userId) {
-            if (confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
-                users = users.filter(u => u.id !== userId);
+            if (!confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) return;
+            
+            const userTasks = tasks.filter(t => t.assignedTo === userId || t.createdBy === userId);
+            if (userTasks.length > 0) {
+                alert('לא ניתן למחוק משתמש שיש לו משימות קשורות');
+                return;
+            }
+            
+            users = users.filter(u => u.id !== userId);
+            loadUsers();
+            loadPartnerEmployeeOptions();
+            saveData();
+            showMessage('settingsUsersTab', 'המשתמש נמחק בהצלחה', 'success');
+        }
+
+        function resetUserCode(userId) {
+            const newCode = prompt('הזן קוד גישה חדש:');
+            if (!newCode) return;
+            
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.code = newCode;
                 loadUsers();
-                showMessage('partnerSettingsTab', 'המשתמש נמחק בהצלחה', 'success');
+                saveData();
+                showMessage('settingsUsersTab', 'הקוד עודכן בהצלחה', 'success');
             }
         }
 
-        function exportData() {
-            const data = { users, tasks, clients, exportDate: new Date().toISOString() };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        // הגדרות מערכת
+        function updateWorkTypes() {
+            const types = document.getElementById('workTypes').value.split('\n').filter(t => t.trim());
+            workTypes = types;
+            updateFormOptions();
+            saveData();
+            showMessage('settingsSystemTab', 'סוגי העבודה עודכנו בהצלחה', 'success');
+        }
+
+        function updateWorkStatuses() {
+            const statuses = document.getElementById('workStatuses').value.split('\n').filter(s => s.trim());
+            workStatuses = statuses;
+            updateFormOptions();
+            saveData();
+            showMessage('settingsSystemTab', 'הסטטוסים עודכנו בהצלחה', 'success');
+        }
+
+        // ניהול נתונים
+        function updateClientsUrl() {
+            const url = document.getElementById('clientsSheetUrl').value;
+            localStorage.setItem('clientsSheetUrl', url);
+            showMessage('settingsDataTab', 'קישור הלקוחות עודכן בהצלחה', 'success');
+        }
+
+        function updateBackupUrl() {
+            const url = document.getElementById('backupSheetUrl').value;
+            localStorage.setItem('backupSheetUrl', url);
+            showMessage('settingsDataTab', 'קישור הגיבוי עודכן בהצלחה', 'success');
+        }
+
+        // סנכרון עם Google Sheets (דמיון)
+        function syncClients() {
+            showMessage('settingsDataTab', 'מסנכרן לקוחות...', 'success');
+            
+            // דמיון של קריאה מ-Google Sheets
+            const newClients = [
+                { id: clients.length + 1, name: 'לקוח מסונכרן 1', contact: 'איש קשר 1', phone: '050-1111111' },
+                { id: clients.length + 2, name: 'לקוח מסונכרן 2', contact: 'איש קשר 2', phone: '050-2222222' }
+            ];
+            
+            clients.push(...newClients);
+            saveData();
+            showMessage('settingsDataTab', `${newClients.length} לקוחות חדשים נוספו`, 'success');
+        }
+
+        function saveToSheets() {
+            showMessage('settingsDataTab', 'שומר לGoogle Sheets...', 'success');
+            // כאן יהיה הקוד לשמירה אמיתית ל-Google Sheets
+            saveData();
+            showMessage('settingsDataTab', 'הנתונים נשמרו בהצלחה', 'success');
+        }
+
+        function setupAutoSync() {
+            autoSyncEnabled = true;
+            saveData();
+            showMessage('settingsDataTab', 'הסנכרון השבועי הופעל', 'success');
+        }
+
+        function disableAutoSync() {
+            autoSyncEnabled = false;
+            saveData();
+            showMessage('settingsDataTab', 'הסנכרון האוטומטי בוטל', 'success');
+        }
+
+        // יצוא ויבוא
+        function exportToExcel() {
+            let csvContent = 'מזהה,כותרת,לקוח,סוג עבודה,סטטוס,תאריך יעד,עובד מטפל,נוצר על ידי,תאריך יצירה,תיאור\n';
+            
+            tasks.forEach(task => {
+                const assignedUser = users.find(u => u.id === task.assignedTo);
+                const createdUser = users.find(u => u.id === task.createdBy);
+                
+                csvContent += [
+                    task.id,
+                    `"${task.title}"`,
+                    `"${task.client}"`,
+                    `"${convertFromValue(task.type)}"`,
+                    `"${convertFromValue(task.status)}"`,
+                    formatDate(task.dueDate),
+                    `"${assignedUser ? assignedUser.fullName : ''}"`,
+                    `"${createdUser ? createdUser.fullName : ''}"`,
+                    formatDate(task.createdDate),
+                    `"${task.description || ''}"`
+                ].join(',') + '\n';
+            });
+            
+            const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `משימות_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
             URL.revokeObjectURL(url);
-        }
-
-        // פונקציות עזר
-        function getStatusText(status) {
-            const statusTexts = {
-                'not-started': 'טרם התחיל',
-                'in-progress': 'בעבודה',
-                'waiting-client': 'מחכה לתגובה מהלקוח',
-                'partner-review': 'הועבר לבדיקת שותף',
-                'completed': 'הסתיים'
-            };
-            return statusTexts[status] || status;
-        }
-
-        function getTypeText(type) {
-            const typeTexts = {
-                'annual-company': 'דוח שנתי חברה',
-                'annual-personal': 'דוח שנתי אישי',
-                'estimate': 'משוער',
-                'ongoing': 'טיפול שוטף',
-                'fine-cancellation': 'ביטול קנסות',
-                'authority-contact': 'פניה לרשויות'
-            };
-            return typeTexts[type] || type;
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('he-IL');
-        }
-
-        function showMessage(containerId, message, type) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
             
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'success' ? 'success-message' : 'error-message';
-            messageDiv.textContent = message;
+            showMessage('settingsDataTab', 'הקובץ יוצא בהצלחה', 'success');
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
             
-            container.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                if (messageDiv.parentNode) {
-                    messageDiv.remove();
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    if (file.name.endsWith('.json')) {
+                        const data = JSON.parse(e.target.result);
+                        
+                        if (data.users) users = data.users;
+                        if (data.tasks) tasks = data.tasks;
+                        if (data.clients) clients = data.clients;
+                        if (data.notifications) notifications = data.notifications;
+                        if (data.workTypes) workTypes = data.workTypes;
+                        if (data.workStatuses) workStatuses = data.workStatuses;
+                        
+                        updateFormOptions();
+                        
+                        if (currentUser.role === 'partner') {
+                            loadUsers();
+                            updatePartnerStats();
+                            filterPartnerTasks();
+                        } else {
+                            filterEmployeeTasks();
+                        }
+                        
+                        updateNotifications();
+                        saveData();
+                        
+                        showMessage('settingsDataTab', 'הנתונים יובאו בהצלחה', 'success');
+                    }
+                } catch (error) {
+                    console.error('שגיאה בייבוא:', error);
+                    showMessage('settingsDataTab', 'שגיאה בייבוא הנתונים', 'error');
                 }
-            }, 3000);
+            };
+            
+            reader.readAsText(file);
         }
 
-        // סגירת autocomplete
+        // מערכת התראות
+        function addNotification(message, type, taskId, targetUserId = null) {
+            const notification = {
+                id: Date.now(),
+                message,
+                type,
+                taskId,
+                targetUserId,
+                date: new Date().toISOString(),
+                isRead: false
+            };
+            
+            notifications.push(notification);
+            updateNotifications();
+            saveData();
+        }
+
+        function updateNotifications() {
+            const userNotifications = notifications.filter(n => {
+                if (currentUser.role === 'partner') {
+                    return !n.targetUserId || n.targetUserId === currentUser.id;
+                } else {
+                    return n.targetUserId === currentUser.id;
+                }
+            });
+            
+            const unreadCount = userNotifications.filter(n => !n.isRead).length;
+            const countElement = document.getElementById('notificationCount');
+            
+            if (unreadCount > 0) {
+                countElement.textContent = unreadCount;
+                countElement.classList.remove('hidden');
+            } else {
+                countElement.classList.add('hidden');
+            }
+            
+            const listElement = document.getElementById('notificationList');
+            listElement.innerHTML = '';
+            
+            if (userNotifications.length === 0) {
+                listElement.innerHTML = '<div style="padding: 20px; text-align: center; color: #7f8c8d;">אין התראות</div>';
+                return;
+            }
+            
+            userNotifications.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            userNotifications.forEach(notification => {
+                const notifElement = document.createElement('div');
+                notifElement.className = `notification-item ${!notification.isRead ? 'unread' : ''}`;
+                notifElement.innerHTML = `
+                    <div style="font-weight: ${!notification.isRead ? 'bold' : 'normal'};">
+                        ${notification.message}
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-top: 5px;">
+                        ${formatDateTime(notification.date)}
+                    </div>
+                `;
+                
+                notifElement.onclick = () => {
+                    notification.isRead = true;
+                    updateNotifications();
+                    saveData();
+                    
+                    if (notification.taskId) {
+                        if (currentUser.role === 'employee') {
+                            showEmployeeTab('my-tasks');
+                        } else {
+                            showPartnerTab('dashboard');
+                        }
+                    }
+                    
+                    toggleNotifications();
+                };
+                
+                listElement.appendChild(notifElement);
+            });
+        }
+
+        function toggleNotifications() {
+            const panel = document.getElementById('notificationPanel');
+            panel.classList.toggle('hidden');
+        }
+
+        function markAllAsRead() {
+            notifications.forEach(n => {
+                if (currentUser.role === 'partner' || n.targetUserId === currentUser.id) {
+                    n.isRead = true;
+                }
+            });
+            updateNotifications();
+            saveData();
+        }
+
+        // שמירה וטעינה
+        function saveData() {
+            const data = {
+                users,
+                tasks,
+                clients,
+                notifications,
+                workTypes,
+                workStatuses,
+                autoSyncEnabled,
+                lastSaved: new Date().toISOString()
+            };
+            
+            localStorage.setItem('rmcpa-data', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('rmcpa-data');
+            if (savedData) {
+                try {
+                    const data = JSON.parse(savedData);
+                    
+                    if (data.users) users = data.users;
+                    if (data.tasks) tasks = data.tasks;
+                    if (data.clients) clients = data.clients;
+                    if (data.notifications) notifications = data.notifications;
+                    if (data.workTypes) workTypes = data.workTypes;
+                    if (data.workStatuses) workStatuses = data.workStatuses;
+                    if (data.autoSyncEnabled !== undefined) autoSyncEnabled = data.autoSyncEnabled;
+                    
+                    console.log('נתונים נטענו מהגיבוי המקומי');
+                    return true;
+                } catch (error) {
+                    console.error('שגיאה בטעינת נתונים:', error);
+                }
+            }
+            return false;
+        }
+
+        function checkRememberMe() {
+            const remembered = localStorage.getItem('rmcpa-remember');
+            if (remembered) {
+                try {
+                    const data = JSON.parse(remembered);
+                    document.getElementById('loginUsername').value = data.username;
+                    document.getElementById('loginCode').value = data.code;
+                    document.getElementById('rememberMe').checked = true;
+                    
+                    const user = users.find(u => u.username === data.username && u.code === data.code);
+                    if (user) {
+                        currentUser = user;
+                        showMainApp();
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('שגיאה בטעינת פרטי התחברות:', error);
+                    localStorage.removeItem('rmcpa-remember');
+                }
+            }
+            return false;
+        }
+
+        // Event listeners
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.autocomplete-container')) {
                 document.querySelectorAll('.autocomplete-list').forEach(list => {
                     list.classList.add('hidden');
                 });
             }
+            
+            if (!e.target.closest('.notification-bell') && !e.target.closest('.notification-panel')) {
+                document.getElementById('notificationPanel').classList.add('hidden');
+            }
+            
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal:not(.hidden)').forEach(modal => {
+                    modal.classList.add('hidden');
+                });
+                document.getElementById('notificationPanel').classList.add('hidden');
+            }
         });
 
         // אתחול המערכת
         window.onload = function() {
-            initializeData();
+            // טעינת נתונים שמורים
+            if (!loadData()) {
+                initializeData();
+            }
             
-            // התחברות אוטומטית למשתמש שמואל
-            currentUser = users.find(u => u.username === 'shmuel');
-            if (currentUser) {
-                showMainApp();
+            // טעינת URLs שמורים
+            const savedClientsUrl = localStorage.getItem('clientsSheetUrl');
+            if (savedClientsUrl) {
+                document.getElementById('clientsSheetUrl').value = savedClientsUrl;
+            }
+            
+            const savedBackupUrl = localStorage.getItem('backupSheetUrl');
+            if (savedBackupUrl) {
+                document.getElementById('backupSheetUrl').value = savedBackupUrl;
+            }
+            
+            // בדיקת "זכור אותי"
+            if (!checkRememberMe()) {
+                document.getElementById('authScreen').classList.remove('hidden');
             }
         };
 
         // שמירה אוטומטית כל 30 שניות
         setInterval(() => {
             if (currentUser) {
-                const data = { users, tasks, clients, lastSaved: new Date().toISOString() };
-                localStorage.setItem('rmcpa-backup', JSON.stringify(data));
+                saveData();
             }
         }, 30000);
 
         // שמירה לפני סגירת החלון
         window.addEventListener('beforeunload', function() {
             if (currentUser) {
-                const data = { users, tasks, clients, lastSaved: new Date().toISOString() };
-                localStorage.setItem('rmcpa-backup', JSON.stringify(data));
+                saveData();
             }
         });
-
-        // טעינת נתונים שמורים בעת הפעלה
-        function loadSavedData() {
-            const savedData = localStorage.getItem('rmcpa-backup');
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    if (data.users) users = data.users;
-                    if (data.tasks) tasks = data.tasks;
-                    if (data.clients) clients = data.clients;
-                    console.log('נתונים נטענו מהגיבוי המקומי');
-                } catch (error) {
-                    console.error('שגיאה בטעינת נתונים:', error);
-                }
-            }
-        }
-
-        // קריאה לטעינת נתונים שמורים
-        loadSavedData();
     </script>
 </body>
 </html>
