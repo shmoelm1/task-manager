@@ -53,7 +53,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         .form-group {
@@ -300,6 +300,12 @@
             border: 1px solid #f5c6cb;
         }
 
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -326,17 +332,25 @@
             <p>נהל את המשימות שלך בצורה פשוטה ויעילה</p>
         </div>
 
+        <!-- מסך טעינה -->
+        <div id="loadingScreen" class="auth-container">
+            <div class="loading">
+                <h2>טוען נתונים...</h2>
+                <p>אנא המתן</p>
+            </div>
+        </div>
+
         <!-- מסך התחברות -->
-        <div id="authScreen" class="auth-container">
+        <div id="authScreen" class="auth-container hidden">
             <div id="loginForm">
                 <h2 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">התחברות למערכת</h2>
                 <div class="form-group">
                     <label>שם משתמש:</label>
-                    <input type="text" id="loginUsername" placeholder="הזן שם משתמש">
+                    <input type="text" id="loginUsername" placeholder="הזן שם משתמש" value="shmuel">
                 </div>
                 <div class="form-group">
                     <label>סיסמה:</label>
-                    <input type="password" id="loginPassword" placeholder="הזן סיסמה">
+                    <input type="password" id="loginPassword" placeholder="הזן סיסמה" value="123456">
                 </div>
                 <button class="btn" onclick="login()">התחבר</button>
                 <button class="btn btn-secondary" onclick="showResetPassword()">שכחתי סיסמה</button>
@@ -383,6 +397,7 @@
                 </div>
                 <div>
                     <button class="btn btn-success" onclick="showModal('taskModal')">משימה חדשה</button>
+                    <button class="btn btn-secondary" onclick="saveToDatabase()">שמור נתונים</button>
                     <button class="btn btn-secondary" onclick="logout()">התנתק</button>
                 </div>
             </div>
@@ -484,13 +499,19 @@
             <div id="settingsTab" class="tab-content hidden">
                 <h3>הגדרות מערכת</h3>
                 <div class="form-group">
+                    <label>מזהה Database (JSONBin):</label>
+                    <input type="text" id="databaseId" placeholder="הזן מזהה JSONBin" value="673a7f5ae41b4d34e45ea24d">
+                    <button class="btn" onclick="updateDatabaseId()">עדכן</button>
+                </div>
+                <div class="form-group">
                     <label>קישור לקובץ אקסל בגוגל דרייב:</label>
                     <input type="url" id="excelUrl" placeholder="הזן קישור לקובץ האקסל">
                     <button class="btn" onclick="updateExcelUrl()">עדכן</button>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-success" onclick="syncClients()">סנכרן לקוחות מאקסל</button>
-                    <button class="btn btn-secondary" onclick="exportData()">גיבוי מערכת</button>
+                    <button class="btn btn-secondary" onclick="saveToDatabase()">גיבוי לDatabase</button>
+                    <button class="btn btn-secondary" onclick="loadFromDatabase()">טען מDatabase</button>
                 </div>
             </div>
         </div>
@@ -608,11 +629,77 @@
         let clients = [];
         let currentEditTaskId = null;
         let currentEditUserId = null;
-        let hasAutoLoggedIn = false;
+        let databaseId = '673a7f5ae41b4d34e45ea24d'; // JSONBin ID
 
-        // נתונים ראשוניים
-        function initializeData() {
-            // משתמשים ראשוניים
+        // Database functions
+        async function saveToDatabase() {
+            const data = {
+                users: users,
+                tasks: tasks,
+                clients: clients,
+                lastUpdated: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${databaseId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': '$2a$10$vKKQR4MZm8ZVIx/TDcNgWuT8MwFk8GxqY/1ZqFxUqP.7qKJ8OL2fS'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showMessage('settingsTab', 'הנתונים נשמרו בהצלחה לDatabase', 'success');
+                } else {
+                    showMessage('settingsTab', 'שגיאה בשמירת הנתונים', 'error');
+                }
+            } catch (error) {
+                console.error('Database save error:', error);
+                showMessage('settingsTab', 'שגיאה בחיבור לDatabase', 'error');
+            }
+        }
+
+        async function loadFromDatabase() {
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${databaseId}/latest`, {
+                    headers: {
+                        'X-Master-Key': '$2a$10$vKKQR4MZm8ZVIx/TDcNgWuT8MwFk8GxqY/1ZqFxUqP.7qKJ8OL2fS'
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const data = result.record;
+                    
+                    if (data.users) users = data.users;
+                    if (data.tasks) tasks = data.tasks;
+                    if (data.clients) clients = data.clients;
+                    
+                    // התחברות אוטומטית למשתמש שמואל
+                    currentUser = users.find(u => u.username === 'shmuel');
+                    if (currentUser) {
+                        showMainApp();
+                    } else {
+                        showAuthScreen();
+                    }
+                    
+                    console.log('נתונים נטענו בהצלחה מהDatabase');
+                } else {
+                    console.log('לא נמצאו נתונים בDatabase, יוצר נתונים חדשים');
+                    initializeDefaultData();
+                    showMainApp();
+                }
+            } catch (error) {
+                console.error('Database load error:', error);
+                console.log('שגיאה בטעינה מDatabase, יוצר נתונים מקומיים');
+                initializeDefaultData();
+                showMainApp();
+            }
+        }
+
+        function initializeDefaultData() {
             users = [
                 {
                     id: 1,
@@ -625,15 +712,15 @@
                 }
             ];
 
-            // לקוחות ראשוניים
             clients = [
                 { id: 1, name: 'חברת ABC', contact: 'יוסי כהן', phone: '050-1234567' },
                 { id: 2, name: 'משרד XYZ', contact: 'שרה לוי', phone: '052-9876543' },
                 { id: 3, name: 'עסק 123', contact: 'דוד אברהם', phone: '054-5555555' }
             ];
 
-            // משימות ראשוניות
             tasks = [];
+            
+            currentUser = users[0]; // התחברות אוטומטית לשמואל
         }
 
         // פונקציות התחברות
@@ -661,6 +748,12 @@
             }
         }
 
+        function showAuthScreen() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+        }
+
         function showFirstLoginForm() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('firstLoginForm').classList.remove('hidden');
@@ -685,11 +778,9 @@
                 return;
             }
 
-            // עדכון הסיסמה
             currentUser.password = newPassword;
             currentUser.isFirstLogin = false;
             
-            // עדכון במערך המשתמשים
             const userIndex = users.findIndex(u => u.id === currentUser.id);
             users[userIndex] = currentUser;
             
@@ -720,7 +811,6 @@
                 return;
             }
 
-            // רק שותף יכול לאפס סיסמה
             if (currentUser && currentUser.role === 'partner') {
                 users[userIndex].password = newPassword;
                 users[userIndex].isFirstLogin = true;
@@ -748,14 +838,13 @@
         }
 
         function showMainApp() {
+            document.getElementById('loadingScreen').classList.add('hidden');
             document.getElementById('authScreen').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             
-            // עדכון פרטי המשתמש
             document.getElementById('currentUserName').textContent = currentUser.fullName;
             document.getElementById('currentUserRole').textContent = `(${currentUser.role === 'partner' ? 'שותף' : 'עובד'})`;
             
-            // הצגת/הסתרת טאב משתמשים לפי תפקיד
             const usersTab = document.getElementById('usersTab');
             if (currentUser.role === 'partner') {
                 usersTab.style.display = 'block';
@@ -771,21 +860,17 @@
 
         // פונקציות טאבים
         function showTab(tabName) {
-            // הסתרת כל הטאבים
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
             });
             
-            // הסרת קלאס active מכל הטאבים
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // הצגת הטאב הנבחר
             document.getElementById(tabName + 'Tab').classList.remove('hidden');
             event.target.classList.add('active');
             
-            // טעינת נתונים לפי הטאב
             switch(tabName) {
                 case 'dashboard':
                     loadDashboard();
@@ -848,7 +933,6 @@
         }
 
         function loadFilterOptions() {
-            // טעינת מטפלים לסינון
             const assigneeFilter = document.getElementById('filterAssignee');
             assigneeFilter.innerHTML = '<option value="">כל המטפלים</option>';
             users.forEach(user => {
@@ -858,7 +942,6 @@
                 assigneeFilter.appendChild(option);
             });
             
-            // טעינת לקוחות לסינון
             const clientFilter = document.getElementById('filterClient');
             clientFilter.innerHTML = '<option value="">כל הלקוחות</option>';
             clients.forEach(client => {
@@ -878,7 +961,6 @@
             
             let filteredTasks = [...tasks];
             
-            // סינון לפי חיפוש
             if (searchTerm) {
                 filteredTasks = filteredTasks.filter(task => 
                     task.title.toLowerCase().includes(searchTerm) ||
@@ -887,26 +969,22 @@
                 );
             }
             
-            // סינון לפי סטטוס
             if (statusFilter) {
                 filteredTasks = filteredTasks.filter(task => task.status === statusFilter);
             }
             
-            // סינון לפי מטפל
             if (assigneeFilter) {
                 filteredTasks = filteredTasks.filter(task => 
                     task.assignees.includes(parseInt(assigneeFilter))
                 );
             }
             
-            // סינון לפי לקוח
             if (clientFilter) {
                 filteredTasks = filteredTasks.filter(task => 
                     task.clientId === parseInt(clientFilter)
                 );
             }
             
-            // מיון
             switch(sortBy) {
                 case 'date-asc':
                     filteredTasks.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
@@ -1015,14 +1093,10 @@
         }
 
         function loadTaskModal() {
-            // איפוס הטופס
             document.getElementById('taskForm').reset();
             currentEditTaskId = null;
-            
-            // עדכון כותרת
             document.getElementById('taskModalTitle').textContent = 'משימה חדשה';
             
-            // טעינת לקוחות
             const clientSelect = document.getElementById('taskClient');
             clientSelect.innerHTML = '<option value="">בחר לקוח</option>';
             clients.forEach(client => {
@@ -1032,10 +1106,8 @@
                 clientSelect.appendChild(option);
             });
             
-            // טעינת מטפלים
             loadAssigneesList();
             
-            // הגדרת תאריך ברירת מחדל
             const today = new Date();
             document.getElementById('taskDueDate').value = today.toISOString().split('T')[0];
         }
@@ -1050,7 +1122,6 @@
                 checkbox.id = `assignee_${user.id}`;
                 checkbox.value = user.id;
                 
-                // אם זה המשתמש הנוכחי, סמן אותו כברירת מחדל
                 if (user.id === currentUser.id) {
                     checkbox.checked = true;
                 }
@@ -1080,7 +1151,6 @@
             saveUser();
         });
 
-        // פונקציות שמירה
         function saveTask() {
             const title = document.getElementById('taskTitle').value;
             const description = document.getElementById('taskDescription').value;
@@ -1091,7 +1161,6 @@
             const notes = document.getElementById('taskNotes').value;
             const status = document.getElementById('taskStatus').value;
             
-            // איסוף מטפלים נבחרים
             const assignees = [];
             document.querySelectorAll('#assigneesList input[type="checkbox"]:checked').forEach(checkbox => {
                 assignees.push(parseInt(checkbox.value));
@@ -1121,18 +1190,15 @@
             };
             
             if (currentEditTaskId) {
-                // עדכון משימה קיימת
                 const index = tasks.findIndex(t => t.id === currentEditTaskId);
                 tasks[index] = task;
             } else {
-                // הוספת משימה חדשה
                 tasks.push(task);
             }
             
             hideModal('taskModal');
             updateDashboardStats();
             
-            // רענון התצוגה הנוכחית
             const activeTab = document.querySelector('.nav-tab.active').textContent;
             if (activeTab === 'דשבורד') {
                 loadDashboard();
@@ -1141,6 +1207,7 @@
             }
             
             showMessage('tasksList', 'המשימה נשמרה בהצלחה', 'success');
+            saveToDatabase(); // שמירה אוטומטית
         }
 
         function editTask(taskId) {
@@ -1149,7 +1216,6 @@
             
             currentEditTaskId = taskId;
             
-            // מילוי הטופס
             document.getElementById('taskTitle').value = task.title;
             document.getElementById('taskDescription').value = task.description;
             document.getElementById('taskClient').value = task.clientId;
@@ -1159,10 +1225,8 @@
             document.getElementById('taskNotes').value = task.notes;
             document.getElementById('taskStatus').value = task.status;
             
-            // עדכון כותרת
             document.getElementById('taskModalTitle').textContent = 'עריכת משימה';
             
-            // טעינת לקוחות
             const clientSelect = document.getElementById('taskClient');
             clientSelect.innerHTML = '<option value="">בחר לקוח</option>';
             clients.forEach(client => {
@@ -1175,10 +1239,8 @@
                 clientSelect.appendChild(option);
             });
             
-            // טעינת מטפלים
             loadAssigneesList();
             
-            // סימון מטפלים קיימים
             task.assignees.forEach(assigneeId => {
                 const checkbox = document.getElementById(`assignee_${assigneeId}`);
                 if (checkbox) {
@@ -1194,7 +1256,6 @@
                 tasks = tasks.filter(t => t.id !== taskId);
                 updateDashboardStats();
                 
-                // רענון התצוגה
                 const activeTab = document.querySelector('.nav-tab.active').textContent;
                 if (activeTab === 'דשבורד') {
                     loadDashboard();
@@ -1203,6 +1264,7 @@
                 }
                 
                 showMessage('tasksList', 'המשימה נמחקה בהצלחה', 'success');
+                saveToDatabase();
             }
         }
 
@@ -1213,7 +1275,6 @@
                 task.completedDate = new Date().toISOString();
                 updateDashboardStats();
                 
-                // רענון התצוגה
                 const activeTab = document.querySelector('.nav-tab.active').textContent;
                 if (activeTab === 'דשבורד') {
                     loadDashboard();
@@ -1222,6 +1283,7 @@
                 }
                 
                 showMessage('tasksList', 'המשימה הושלמה בהצלחה', 'success');
+                saveToDatabase();
             }
         }
 
@@ -1278,7 +1340,6 @@
                 return;
             }
             
-            // בדיקת שם משתמש קיים
             if (users.some(u => u.username === username && u.id !== currentEditUserId)) {
                 alert('שם המשתמש כבר קיים');
                 return;
@@ -1308,6 +1369,7 @@
             hideModal('userModal');
             loadUsers();
             showMessage('usersList', 'המשתמש נשמר בהצלחה', 'success');
+            saveToDatabase();
         }
 
         function editUser(userId) {
@@ -1330,6 +1392,7 @@
                 users = users.filter(u => u.id !== userId);
                 loadUsers();
                 showMessage('usersList', 'המשתמש נמחק בהצלחה', 'success');
+                saveToDatabase();
             }
         }
 
@@ -1340,6 +1403,7 @@
                 user.isFirstLogin = true;
                 loadUsers();
                 showMessage('usersList', 'הסיסמה אופסה בהצלחה', 'success');
+                saveToDatabase();
             }
         }
 
@@ -1373,17 +1437,19 @@
 
         // פונקציות הגדרות ונתונים
         function loadSettings() {
-            const excelUrl = localStorage.getItem('excelUrl') || '';
-            document.getElementById('excelUrl').value = excelUrl;
+            document.getElementById('databaseId').value = databaseId;
+        }
+
+        function updateDatabaseId() {
+            databaseId = document.getElementById('databaseId').value;
+            showMessage('settingsTab', 'מזהה Database עודכן בהצלחה', 'success');
         }
 
         function updateExcelUrl() {
-            // שמירה בזיכרון במקום localStorage
             showMessage('settingsTab', 'הקישור עודכן בהצלחה', 'success');
         }
 
         function syncClients() {
-            // דמיון של סנכרון לקוחות מאקסל
             const newClients = [
                 { id: clients.length + 1, name: 'לקוח חדש 1', contact: 'איש קשר 1', phone: '050-1111111' },
                 { id: clients.length + 2, name: 'לקוח חדש 2', contact: 'איש קשר 2', phone: '050-2222222' }
@@ -1391,6 +1457,7 @@
             
             clients.push(...newClients);
             showMessage('settingsTab', 'הלקוחות סונכרנו בהצלחה', 'success');
+            saveToDatabase();
         }
 
         function loadClients() {
@@ -1430,6 +1497,7 @@
                     loadUsers();
                     updateDashboardStats();
                     showMessage('usersTab', 'הנתונים יובאו בהצלחה', 'success');
+                    saveToDatabase();
                 } catch (error) {
                     showMessage('usersTab', 'שגיאה בייבוא הנתונים', 'error');
                 }
@@ -1439,32 +1507,8 @@
 
         // אתחול המערכת
         window.onload = function() {
-            initializeData();
-            
-            // התחברות אוטומטית למשתמש שמואל (רק בטעינה ראשונה)
-            if (!localStorage.getItem('hasAutoLoggedIn')) {
-                currentUser = users.find(u => u.username === 'shmuel');
-                if (currentUser) {
-                    localStorage.setItem('hasAutoLoggedIn', 'true');
-                    showMainApp();
-                    return;
-                }
-            }
-            
-            // בדיקת התחברות קיימת
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            }
+            loadFromDatabase();
         };
-
-        // שמירת משתמש נוכחי
-        function saveCurrentUser() {
-            if (currentUser) {
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            }
-        }
 
         // Event listeners נוספים
         document.addEventListener('keydown', function(e) {
@@ -1475,7 +1519,6 @@
             }
         });
 
-        // סגירת modal בלחיצה על הרקע
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('modal')) {
                 e.target.classList.add('hidden');
