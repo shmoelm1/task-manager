@@ -37,43 +37,123 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .user-selector {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
+        /* מערכת התחברות */
+        .login-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
 
-        .user-btn {
-            padding: 12px 30px;
+        .login-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .autocomplete-suggestion {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .autocomplete-suggestion:hover {
+            background: #f8f9fa;
+        }
+
+        .autocomplete-suggestion:last-child {
+            border-bottom: none;
+        }
+
+        /* כפתורים */
+        .btn {
+            padding: 12px 25px;
             border: none;
-            border-radius: 25px;
-            font-size: 1.1rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: bold;
+            width: 100%;
         }
 
-        .user-btn.employee {
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-success {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
         }
 
-        .user-btn.partner {
-            background: linear-gradient(45deg, #2196F3, #1976D2);
+        .btn-danger {
+            background: linear-gradient(45deg, #FF6B6B, #dc3545);
             color: white;
         }
 
-        .user-btn:hover {
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .user-btn.active {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(255,255,255,0.5);
-        }
-
+        /* פאנל ראשי */
         .main-panel {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
@@ -82,84 +162,148 @@
             backdrop-filter: blur(10px);
         }
 
-        .search-bar {
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* דשבורד שותף */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .management-panel {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .management-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .management-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .management-btn {
+            padding: 12px;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+        }
+
+        .management-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        /* סינון מקוצר */
+        .mini-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .mini-filter {
             display: flex;
             align-items: center;
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-            transition: border-color 0.3s ease;
+            gap: 8px;
         }
 
-        .search-bar:focus-within {
-            border-color: #667eea;
-        }
-
-        .search-bar input {
-            flex: 1;
-            border: none;
-            background: none;
-            font-size: 1.1rem;
-            outline: none;
-            margin-right: 10px;
-        }
-
-        .search-icon {
-            font-size: 1.2rem;
-            color: #667eea;
-        }
-
-        .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 15px;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .filter-group label {
-            font-weight: bold;
-            color: #495057;
+        .mini-filter select {
+            padding: 6px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
             font-size: 0.9rem;
+            min-width: 100px;
         }
 
-        .filter-group select {
+        .mini-search {
+            flex: 1;
             padding: 8px 12px;
             border: 1px solid #ced4da;
-            border-radius: 8px;
-            background: white;
+            border-radius: 6px;
             font-size: 0.9rem;
-            min-width: 120px;
+        }
+
+        /* כפתור הוספת משימה מודגש */
+        .add-task-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         .add-task-btn {
             background: linear-gradient(45deg, #FF6B6B, #FF8E53);
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 15px;
-            font-size: 1.1rem;
+            padding: 20px 40px;
+            border-radius: 20px;
+            font-size: 1.3rem;
             font-weight: bold;
             cursor: pointer;
-            margin-bottom: 20px;
             transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
         }
 
         .add-task-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
         }
 
+        /* כרטיסיות משימות */
         .tasks-container {
             display: grid;
             gap: 20px;
@@ -255,13 +399,96 @@
 
         .task-notes {
             background: #f8f9fa;
-            padding: 10px;
+            padding: 15px;
             border-radius: 8px;
-            font-style: italic;
             margin-top: 10px;
             border-right: 3px solid #667eea;
         }
 
+        .notes-content {
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .notes-comments {
+            border-top: 1px solid #e9ecef;
+            padding-top: 10px;
+        }
+
+        .comment {
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-right: 2px solid #667eea;
+            font-size: 0.85rem;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #667eea;
+            margin-left: 5px;
+        }
+
+        .comment-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+            float: left;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .comment-btn {
+            padding: 6px 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        /* טופס הוספת משימה בתוך הדף */
+        .add-task-form {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .form-actions .btn {
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        /* מודאל עריכה */
         .modal {
             display: none;
             position: fixed;
@@ -319,82 +546,6 @@
             color: #dc3545;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #495057;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-        }
-
-        .btn-danger {
-            background: linear-gradient(45deg, #FF6B6B, #dc3545);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
         .loading {
             text-align: center;
             padding: 40px;
@@ -416,31 +567,8 @@
             100% { transform: rotate(360deg); }
         }
 
-        .stats-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .hidden {
+            display: none !important;
         }
 
         @media (max-width: 768px) {
@@ -452,16 +580,20 @@
                 font-size: 2rem;
             }
             
-            .user-selector {
-                flex-direction: column;
-                align-items: center;
+            .dashboard {
+                grid-template-columns: 1fr;
             }
             
-            .filters {
-                flex-direction: column;
+            .stats-panel {
+                grid-template-columns: 1fr;
             }
             
-            .task-details {
+            .mini-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -474,133 +606,217 @@
             <p>ניהול משימות חכם ויעיל</p>
         </div>
 
-        <div class="user-selector">
-            <button class="user-btn employee active" onclick="setUserType('employee')">
-                👷‍♂️ מצב עובד
-            </button>
-            <button class="user-btn partner" onclick="setUserType('partner')">
-                🤝 מצב שותף
-            </button>
+        <!-- מסך התחברות -->
+        <div id="login-screen" class="login-panel">
+            <h2 class="login-title">התחברות למערכת</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">שם משתמש:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">סיסמה:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">התחבר</button>
+            </form>
         </div>
 
-        <div class="main-panel">
-            <div id="loading" class="loading" style="display: none;">
-                <div class="spinner"></div>
-                <p>טוען נתונים...</p>
-            </div>
+        <!-- מסך ראשי -->
+        <div id="main-screen" class="hidden">
+            <div class="main-panel">
+                <div id="loading" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>טוען נתונים...</p>
+                </div>
 
-            <div id="stats-panel" class="stats-panel" style="display: none;">
-                <div class="stat-card">
-                    <div class="stat-number" id="total-tasks">0</div>
-                    <div class="stat-label">סה"כ משימות</div>
+                <!-- מידע משתמש -->
+                <div class="user-info">
+                    <div>
+                        <strong id="current-user">משתמש</strong>
+                        <span id="user-role" class="badge"></span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">התנתק</button>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="completed-tasks">0</div>
-                    <div class="stat-label">משימות שהושלמו</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="pending-tasks">0</div>
-                    <div class="stat-label">משימות ממתינות</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="high-priority-tasks">0</div>
-                    <div class="stat-label">עדיפות גבוהה</div>
-                </div>
-            </div>
 
-            <div class="search-bar">
-                <input type="text" id="search-input" placeholder="חיפוש משימות..." onkeyup="filterTasks()">
-                <span class="search-icon">🔍</span>
-            </div>
+                <!-- דשבורד שותף -->
+                <div id="partner-dashboard" class="dashboard hidden">
+                    <div class="stats-panel">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-tasks">0</div>
+                            <div class="stat-label">סה"כ משימות</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="completed-tasks">0</div>
+                            <div class="stat-label">משימות שהושלמו</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="pending-tasks">0</div>
+                            <div class="stat-label">משימות ממתינות</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="high-priority-tasks">0</div>
+                            <div class="stat-label">עדיפות גבוהה</div>
+                        </div>
+                    </div>
+                    
+                    <div class="management-panel">
+                        <h3 class="management-title">ניהול המערכת</h3>
+                        <div class="management-actions">
+                            <div class="management-btn" onclick="openUserManagement()">
+                                👥 ניהול משתמשים
+                            </div>
+                            <div class="management-btn" onclick="openTaskTypeManagement()">
+                                📋 ניהול סוגי משימות
+                            </div>
+                            <div class="management-btn" onclick="openReports()">
+                                📊 דוחות ומעקב
+                            </div>
+                            <div class="management-btn" onclick="syncClients()">
+                                🔄 סנכרון לקוחות
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="filters">
-                <div class="filter-group">
-                    <label>סטטוס</label>
-                    <select id="status-filter" onchange="filterTasks()">
-                        <option value="">כל הסטטוסים</option>
-                        <option value="טרם התחיל">טרם התחיל</option>
-                        <option value="בתהליך">בתהליך</option>
-                        <option value="הושלם">הושלם</option>
-                        <option value="מושהה">מושהה</option>
-                    </select>
+                <!-- סינון מקוצר -->
+                <div class="mini-filters">
+                    <input type="text" class="mini-search" id="search-input" placeholder="חיפוש מהיר...">
+                    <div class="mini-filter">
+                        <label>סטטוס:</label>
+                        <select id="status-filter">
+                            <option value="">הכל</option>
+                            <option value="טרם התחיל">טרם התחיל</option>
+                            <option value="בתהליך">בתהליך</option>
+                            <option value="הושלם">הושלם</option>
+                            <option value="מושהה">מושהה</option>
+                        </select>
+                    </div>
+                    <div class="mini-filter">
+                        <label>עדיפות:</label>
+                        <select id="priority-filter">
+                            <option value="">הכל</option>
+                            <option value="גבוהה">גבוהה</option>
+                            <option value="בינונית">בינונית</option>
+                            <option value="נמוכה">נמוכה</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label>עדיפות</label>
-                    <select id="priority-filter" onchange="filterTasks()">
-                        <option value="">כל העדיפויות</option>
-                        <option value="גבוהה">גבוהה</option>
-                        <option value="בינונית">בינונית</option>
-                        <option value="נמוכה">נמוכה</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>סוג משימה</label>
-                    <select id="type-filter" onchange="filterTasks()">
-                        <option value="">כל הסוגים</option>
-                        <option value="פגישה">פגישה</option>
-                        <option value="שיחה">שיחה</option>
-                        <option value="מסמכים">מסמכים</option>
-                        <option value="מעקב">מעקב</option>
-                        <option value="אחר">אחר</option>
-                    </select>
-                </div>
-                <div class="filter-group" id="employee-filter-group" style="display: none;">
-                    <label>עובד</label>
-                    <select id="employee-filter" onchange="filterTasks()">
-                        <option value="">כל העובדים</option>
-                    </select>
-                </div>
-            </div>
 
-            <button class="add-task-btn" onclick="openAddTaskModal()">
-                ➕ הוסף משימה חדשה
-            </button>
+                <!-- כפתור הוספת משימה מודגש -->
+                <div class="add-task-section">
+                    <button class="add-task-btn" onclick="toggleAddTaskForm()">
+                        ➕ הוסף משימה חדשה
+                    </button>
+                </div>
 
-            <div id="tasks-container" class="tasks-container">
-                <!-- משימות יוצגו כאן -->
+                <!-- טופס הוספת משימה -->
+                <div id="add-task-form" class="add-task-form hidden">
+                    <h3 style="margin-bottom: 20px; color: #2c3e50;">🆕 משימה חדשה</h3>
+                    <form id="task-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="client-name">שם לקוח *</label>
+                                <div class="autocomplete-container">
+                                    <input type="text" id="client-name" placeholder="התחל להקליד שם לקוח..." required>
+                                    <div id="client-suggestions" class="autocomplete-suggestions hidden"></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="partner-handler">שותף מטפל *</label>
+                                <select id="partner-handler" required>
+                                    <option value="">בחר שותף</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="additional-employee">עובד נוסף</label>
+                                <select id="additional-employee">
+                                    <option value="">בחר עובד (אופציונלי)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-type">סוג משימה *</label>
+                                <select id="task-type" required>
+                                    <option value="">בחר סוג משימה</option>
+                                    <option value="פגישה">פגישה</option>
+                                    <option value="שיחה">שיחה</option>
+                                    <option value="מסמכים">מסמכים</option>
+                                    <option value="מעקב">מעקב</option>
+                                    <option value="אחר">אחר</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">עדיפות *</label>
+                                <select id="priority" required>
+                                    <option value="">בחר עדיפות</option>
+                                    <option value="גבוהה">גבוהה</option>
+                                    <option value="בינונית">בינונית</option>
+                                    <option value="נמוכה">נמוכה</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="due-date">תאריך יעד *</label>
+                                <input type="date" id="due-date" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">הערות</label>
+                            <textarea id="notes" placeholder="הוסף הערות נוספות..." rows="3"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="cancelAddTask()">ביטול</button>
+                            <button type="submit" class="btn btn-success">💾 שמור משימה</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- רשימת משימות -->
+                <div id="tasks-container" class="tasks-container">
+                    <!-- משימות יוצגו כאן -->
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal להוספת/עריכת משימה -->
-    <div id="task-modal" class="modal">
+    <!-- מודאל עריכת משימה -->
+    <div id="edit-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modal-title">הוסף משימה חדשה</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <h2 class="modal-title">עריכת משימה</h2>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
             </div>
             
-            <form id="task-form">
+            <form id="edit-form">
                 <div class="form-group">
-                    <label for="client-name">שם לקוח *</label>
-                    <select id="client-name" required>
-                        <option value="">בחר לקוח</option>
-                    </select>
+                    <label for="edit-client-name">שם לקוח *</label>
+                    <div class="autocomplete-container">
+                        <input type="text" id="edit-client-name" required>
+                        <div id="edit-client-suggestions" class="autocomplete-suggestions hidden"></div>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="partner-handler">שותף מטפל *</label>
-                    <select id="partner-handler" required>
+                    <label for="edit-partner-handler">שותף מטפל *</label>
+                    <select id="edit-partner-handler" required>
                         <option value="">בחר שותף</option>
-                        <option value="יניב">יניב</option>
-                        <option value="אריק">אריק</option>
-                        <option value="דני">דני</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="additional-employee">עובד נוסף</label>
-                    <select id="additional-employee">
+                    <label for="edit-additional-employee">עובד נוסף</label>
+                    <select id="edit-additional-employee">
                         <option value="">בחר עובד (אופציונלי)</option>
-                        <option value="מיכל">מיכל</option>
-                        <option value="רונית">רונית</option>
-                        <option value="אבי">אבי</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="task-type">סוג משימה *</label>
-                    <select id="task-type" required>
+                    <label for="edit-task-type">סוג משימה *</label>
+                    <select id="edit-task-type" required>
                         <option value="">בחר סוג משימה</option>
                         <option value="פגישה">פגישה</option>
                         <option value="שיחה">שיחה</option>
@@ -611,8 +827,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="task-status">סטטוס משימה</label>
-                    <select id="task-status">
+                    <label for="edit-task-status">סטטוס משימה</label>
+                    <select id="edit-task-status">
                         <option value="טרם התחיל">טרם התחיל</option>
                         <option value="בתהליך">בתהליך</option>
                         <option value="הושלם">הושלם</option>
@@ -621,8 +837,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="priority">עדיפות *</label>
-                    <select id="priority" required>
+                    <label for="edit-priority">עדיפות *</label>
+                    <select id="edit-priority" required>
                         <option value="">בחר עדיפות</option>
                         <option value="גבוהה">גבוהה</option>
                         <option value="בינונית">בינונית</option>
@@ -631,19 +847,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="due-date">תאריך יעד *</label>
-                    <input type="date" id="due-date" required>
+                    <label for="edit-due-date">תאריך יעד *</label>
+                    <input type="date" id="edit-due-date" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="notes">הערות</label>
-                    <textarea id="notes" placeholder="הוסף הערות נוספות..."></textarea>
+                    <label for="edit-notes">הערות</label>
+                    <textarea id="edit-notes" rows="3"></textarea>
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">ביטול</button>
-                    <button type="submit" class="btn btn-primary" id="save-btn">שמור משימה</button>
-                    <button type="button" class="btn btn-danger" id="delete-btn" style="display: none;" onclick="deleteTask()">מחק משימה</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">ביטול</button>
+                    <button type="submit" class="btn btn-primary">💾 עדכן משימה</button>
+                    <button type="button" class="btn btn-danger" onclick="deleteTask()">🗑️ מחק משימה</button>
                 </div>
             </form>
         </div>
@@ -651,9 +867,10 @@
 
     <script>
         // משתנים גלובליים
-        let currentUserType = 'employee';
+        let currentUser = null;
         let tasks = [];
         let clients = [];
+        let users = [];
         let editingTaskId = null;
 
         // הגדרות Google Sheets
@@ -661,48 +878,111 @@
         const CLIENTS_SPREADSHEET_ID = '1rZvtny_hfa-7VvV0MzkPMGssLIUUVDm6';
         const API_KEY = 'AIzaSyDR6k3fBY1aZXW_UhVoCC2N34nKpVDX3vo';
 
+        // משתמשים לדוגמה (במציאות יהיה במסד נתונים)
+        const defaultUsers = [
+            { username: 'admin', password: 'admin123', role: 'admin', name: 'מנהל המערכת' },
+            { username: 'yaniv', password: 'yaniv123', role: 'partner', name: 'יניב' },
+            { username: 'arik', password: 'arik123', role: 'partner', name: 'אריק' },
+            { username: 'michal', password: 'michal123', role: 'employee', name: 'מיכל' },
+            { username: 'ronit', password: 'ronit123', role: 'employee', name: 'רונית' }
+        ];
+
         // אתחול המערכת
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            users = [...defaultUsers];
             setMinDate();
+            setupEventListeners();
         });
 
         // הגדרת תאריך מינימום להיום
         function setMinDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('due-date').min = today;
+            document.getElementById('edit-due-date').min = today;
         }
 
-        // החלפת סוג משתמש
-        function setUserType(type) {
-            currentUserType = type;
+        // הגדרת מאזיני אירועים
+        function setupEventListeners() {
+            // התחברות
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
             
-            // עדכון כפתורים
-            document.querySelectorAll('.user-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.user-btn.${type}`).classList.add('active');
+            // טופס משימה חדשה
+            document.getElementById('task-form').addEventListener('submit', handleAddTask);
+            
+            // טופס עריכת משימה
+            document.getElementById('edit-form').addEventListener('submit', handleEditTask);
+            
+            // חיפוש וסינון
+            document.getElementById('search-input').addEventListener('input', filterTasks);
+            document.getElementById('status-filter').addEventListener('change', filterTasks);
+            document.getElementById('priority-filter').addEventListener('change', filterTasks);
+            
+            // אוטוקומפליט לקוחות
+            setupAutocomplete('client-name', 'client-suggestions');
+            setupAutocomplete('edit-client-name', 'edit-client-suggestions');
+        }
 
-            // הצגת/הסתרת פילטר עובדים למצב שותף
-            const employeeFilter = document.getElementById('employee-filter-group');
-            const statsPanel = document.getElementById('stats-panel');
+        // התחברות
+        function handleLogin(e) {
+            e.preventDefault();
             
-            if (type === 'partner') {
-                employeeFilter.style.display = 'flex';
-                statsPanel.style.display = 'grid';
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                showMainScreen();
+                loadData();
             } else {
-                employeeFilter.style.display = 'none';
-                statsPanel.style.display = 'none';
+                alert('שם משתמש או סיסמה שגויים');
             }
+        }
 
-            // סינון משימות לפי סוג משתמש
-            filterTasks();
-            updateStats();
+        // הצגת מסך ראשי
+        function showMainScreen() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            
+            // עדכון פרטי משתמש
+            document.getElementById('current-user').textContent = currentUser.name;
+            
+            const roleElement = document.getElementById('user-role');
+            if (currentUser.role === 'admin' || currentUser.role === 'partner') {
+                roleElement.textContent = currentUser.role === 'admin' ? 'מנהל' : 'שותף';
+                roleElement.style.background = '#667eea';
+                roleElement.style.color = 'white';
+                roleElement.style.padding = '3px 8px';
+                roleElement.style.borderRadius = '10px';
+                roleElement.style.fontSize = '0.8rem';
+                
+                // הצגת דשבורד שותף
+                document.getElementById('partner-dashboard').classList.remove('hidden');
+            } else {
+                roleElement.textContent = 'עובד';
+                roleElement.style.background = '#4CAF50';
+                roleElement.style.color = 'white';
+                roleElement.style.padding = '3px 8px';
+                roleElement.style.borderRadius = '10px';
+                roleElement.style.fontSize = '0.8rem';
+            }
+            
+            populateUserSelects();
+        }
+
+        // התנתקות
+        function logout() {
+            currentUser = null;
+            document.getElementById('main-screen').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-form').reset();
+            document.getElementById('partner-dashboard').classList.add('hidden');
         }
 
         // טעינת נתונים
         async function loadData() {
-            document.getElementById('loading').style.display = 'block';
+            showLoading(true);
             
             try {
                 await Promise.all([
@@ -710,21 +990,26 @@
                     loadClients()
                 ]);
                 
-                populateEmployeeFilter();
                 filterTasks();
                 updateStats();
             } catch (error) {
                 console.error('שגיאה בטעינת נתונים:', error);
-                alert('שגיאה בטעינת נתונים. אנא נסה שוב.');
+                alert('שגיאה בטעינת נתונים. נעבוד עם נתוני דוגמה.');
+                initializeSampleData();
             } finally {
-                document.getElementById('loading').style.display = 'none';
+                showLoading(false);
             }
+        }
+
+        // הצגת/הסתרת טוען
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
         }
 
         // טעינת משימות מ-Google Sheets
         async function loadTasks() {
             try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/משימות!A:I?key=${API_KEY}`;
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/משימות!A:J?key=${API_KEY}`;
                 const response = await fetch(url);
                 const data = await response.json();
                 
@@ -739,12 +1024,15 @@
                         priority: row[5] || '',
                         dueDate: row[6] || '',
                         notes: row[7] || '',
-                        createdDate: row[8] || new Date().toLocaleDateString('he-IL')
+                        createdDate: row[8] || new Date().toLocaleDateString('he-IL'),
+                        comments: row[9] ? JSON.parse(row[9]) : []
                     }));
+                } else {
+                    throw new Error('אין נתונים בגיליון');
                 }
             } catch (error) {
                 console.error('שגיאה בטעינת משימות:', error);
-                tasks = [];
+                throw error;
             }
         }
 
@@ -757,40 +1045,287 @@
                 
                 if (data.values && data.values.length > 0) {
                     clients = data.values.flat().filter(client => client && client.trim());
-                    populateClientSelect();
+                    console.log('נטענו לקוחות:', clients.length);
+                } else {
+                    throw new Error('אין נתוני לקוחות');
                 }
             } catch (error) {
                 console.error('שגיאה בטעינת לקוחות:', error);
-                clients = ['לקוח לדוגמה 1', 'לקוח לדוגמה 2', 'לקוח לדוגמה 3'];
-                populateClientSelect();
+                // נתוני לקוחות לדוגמה
+                clients = [
+                    'חברת הטכנולוגיה בע"מ',
+                    'משרד עורכי דין כהן ושות',
+                    'קבוצת נדל"ן פרימיום',
+                    'חברת הייטק דיגיטל',
+                    'מרכז רפואי מדיקל',
+                    'בנק ישראל בע"מ',
+                    'חברת הבנייה הירוקה'
+                ];
             }
         }
 
-        // מילוי רשימת הלקוחות
-        function populateClientSelect() {
-            const clientSelect = document.getElementById('client-name');
-            clientSelect.innerHTML = '<option value="">בחר לקוח</option>';
+        // אתחול נתוני דוגמה
+        function initializeSampleData() {
+            tasks = [
+                {
+                    id: 1,
+                    clientName: 'חברת הטכנולוגיה בע"מ',
+                    partnerHandler: 'יניב',
+                    additionalEmployee: 'מיכל',
+                    taskType: 'פגישה',
+                    status: 'בתהליך',
+                    priority: 'גבוהה',
+                    dueDate: '2025-06-15',
+                    notes: 'פגישה חשובה לגבי פרויקט חדש',
+                    createdDate: '11/06/2025',
+                    comments: [
+                        { author: 'יניב', time: '12:30', text: 'הלקוח מבקש לדחות ליום רביעי' },
+                        { author: 'מיכל', time: '13:15', text: 'בסדר, אני אעדכן את הלקוח' }
+                    ]
+                },
+                {
+                    id: 2,
+                    clientName: 'משרד עורכי דין כהן ושות',
+                    partnerHandler: 'אריק',
+                    additionalEmployee: '',
+                    taskType: 'מסמכים',
+                    status: 'טרם התחיל',
+                    priority: 'בינונית',
+                    dueDate: '2025-06-20',
+                    notes: 'הכנת מסמכים משפטיים',
+                    createdDate: '11/06/2025',
+                    comments: []
+                },
+                {
+                    id: 3,
+                    clientName: 'קבוצת נדל"ן פרימיום',
+                    partnerHandler: 'יניב',
+                    additionalEmployee: '',
+                    taskType: 'מעקב',
+                    status: 'הושלם',
+                    priority: 'נמוכה',
+                    dueDate: '2025-06-10',
+                    notes: 'מעקב אחר עסקת נדל"ן',
+                    createdDate: '05/06/2025',
+                    comments: [
+                        { author: 'יניב', time: '09:00', text: 'העסקה אושרה בהצלחה!' }
+                    ]
+                }
+            ];
             
-            clients.forEach(client => {
-                const option = document.createElement('option');
-                option.value = client;
-                option.textContent = client;
-                clientSelect.appendChild(option);
+            filterTasks();
+            updateStats();
+        }
+
+        // מילוי רשימות משתמשים
+        function populateUserSelects() {
+            const partnerSelects = ['partner-handler', 'edit-partner-handler'];
+            const employeeSelects = ['additional-employee', 'edit-additional-employee'];
+            
+            // מילוי שותפים
+            partnerSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">בחר שותף</option>';
+                
+                users.filter(u => u.role === 'partner' || u.role === 'admin').forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.name;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                });
+            });
+            
+            // מילוי עובדים
+            employeeSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">בחר עובד (אופציונלי)</option>';
+                
+                users.filter(u => u.role === 'employee').forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.name;
+                    option.textContent = user.name;
+                    select.appendChild(option);
+                });
             });
         }
 
-        // מילוי פילטר עובדים
-        function populateEmployeeFilter() {
-            const employeeFilter = document.getElementById('employee-filter');
-            const employees = [...new Set(tasks.map(task => task.partnerHandler).filter(emp => emp))];
+        // הגדרת אוטוקומפליט
+        function setupAutocomplete(inputId, suggestionsId) {
+            const input = document.getElementById(inputId);
+            const suggestions = document.getElementById(suggestionsId);
             
-            employeeFilter.innerHTML = '<option value="">כל העובדים</option>';
-            employees.forEach(employee => {
-                const option = document.createElement('option');
-                option.value = employee;
-                option.textContent = employee;
-                employeeFilter.appendChild(option);
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length < 1) {
+                    suggestions.classList.add('hidden');
+                    return;
+                }
+                
+                const matches = clients.filter(client => 
+                    client.toLowerCase().includes(value)
+                ).slice(0, 10);
+                
+                if (matches.length > 0) {
+                    suggestions.innerHTML = matches.map(client => 
+                        `<div class="autocomplete-suggestion" onclick="selectClient('${inputId}', '${client}')">${client}</div>`
+                    ).join('');
+                    suggestions.classList.remove('hidden');
+                } else {
+                    suggestions.classList.add('hidden');
+                }
             });
+            
+            // סגירת הצעות בלחיצה בחוץ
+            document.addEventListener('click', function(e) {
+                if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+                    suggestions.classList.add('hidden');
+                }
+            });
+        }
+
+        // בחירת לקוח מהרשימה
+        function selectClient(inputId, client) {
+            document.getElementById(inputId).value = client;
+            document.getElementById(inputId === 'client-name' ? 'client-suggestions' : 'edit-client-suggestions').classList.add('hidden');
+        }
+
+        // הצגת/הסתרת טופס הוספת משימה
+        function toggleAddTaskForm() {
+            const form = document.getElementById('add-task-form');
+            const isHidden = form.classList.contains('hidden');
+            
+            if (isHidden) {
+                form.classList.remove('hidden');
+                document.getElementById('client-name').focus();
+            } else {
+                form.classList.add('hidden');
+                document.getElementById('task-form').reset();
+            }
+        }
+
+        // ביטול הוספת משימה
+        function cancelAddTask() {
+            document.getElementById('add-task-form').classList.add('hidden');
+            document.getElementById('task-form').reset();
+        }
+
+        // טיפול בהוספת משימה
+        function handleAddTask(e) {
+            e.preventDefault();
+            
+            const taskData = {
+                id: tasks.length + 1,
+                clientName: document.getElementById('client-name').value,
+                partnerHandler: document.getElementById('partner-handler').value,
+                additionalEmployee: document.getElementById('additional-employee').value,
+                taskType: document.getElementById('task-type').value,
+                status: 'טרם התחיל',
+                priority: document.getElementById('priority').value,
+                dueDate: document.getElementById('due-date').value,
+                notes: document.getElementById('notes').value,
+                createdDate: new Date().toLocaleDateString('he-IL'),
+                comments: []
+            };
+            
+            tasks.push(taskData);
+            saveToGoogleSheets();
+            
+            cancelAddTask();
+            filterTasks();
+            updateStats();
+            
+            alert('המשימה נוספה בהצלחה! 🎉');
+        }
+
+        // עריכת משימה
+        function editTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            editingTaskId = taskId;
+            
+            // מילוי הטופס
+            document.getElementById('edit-client-name').value = task.clientName;
+            document.getElementById('edit-partner-handler').value = task.partnerHandler;
+            document.getElementById('edit-additional-employee').value = task.additionalEmployee;
+            document.getElementById('edit-task-type').value = task.taskType;
+            document.getElementById('edit-task-status').value = task.status;
+            document.getElementById('edit-priority').value = task.priority;
+            document.getElementById('edit-due-date').value = task.dueDate;
+            document.getElementById('edit-notes').value = task.notes;
+            
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+
+        // טיפול בעריכת משימה
+        function handleEditTask(e) {
+            e.preventDefault();
+            
+            const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
+            if (taskIndex === -1) return;
+            
+            tasks[taskIndex] = {
+                ...tasks[taskIndex],
+                clientName: document.getElementById('edit-client-name').value,
+                partnerHandler: document.getElementById('edit-partner-handler').value,
+                additionalEmployee: document.getElementById('edit-additional-employee').value,
+                taskType: document.getElementById('edit-task-type').value,
+                status: document.getElementById('edit-task-status').value,
+                priority: document.getElementById('edit-priority').value,
+                dueDate: document.getElementById('edit-due-date').value,
+                notes: document.getElementById('edit-notes').value
+            };
+            
+            saveToGoogleSheets();
+            closeEditModal();
+            filterTasks();
+            updateStats();
+            
+            alert('המשימה עודכנה בהצלחה! ✅');
+        }
+
+        // סגירת מודאל עריכה
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+            editingTaskId = null;
+        }
+
+        // מחיקת משימה
+        function deleteTask() {
+            if (!editingTaskId) return;
+            
+            if (confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
+                tasks = tasks.filter(task => task.id !== editingTaskId);
+                saveToGoogleSheets();
+                closeEditModal();
+                filterTasks();
+                updateStats();
+                alert('המשימה נמחקה בהצלחה! 🗑️');
+            }
+        }
+
+        // הוספת תגובה
+        function addComment(taskId, inputId) {
+            const input = document.getElementById(inputId);
+            const commentText = input.value.trim();
+            
+            if (!commentText) return;
+            
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+            
+            const comment = {
+                author: currentUser.name,
+                time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }),
+                text: commentText
+            };
+            
+            if (!task.comments) task.comments = [];
+            task.comments.push(comment);
+            
+            input.value = '';
+            saveToGoogleSheets();
+            filterTasks();
         }
 
         // סינון משימות
@@ -798,35 +1333,29 @@
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             const statusFilter = document.getElementById('status-filter').value;
             const priorityFilter = document.getElementById('priority-filter').value;
-            const typeFilter = document.getElementById('type-filter').value;
-            const employeeFilter = document.getElementById('employee-filter').value;
-
+            
             let filteredTasks = tasks.filter(task => {
-                // סינון לפי סוג משתמש
-                if (currentUserType === 'employee') {
-                    // עובד רואה רק משימות שלו
-                    const currentEmployee = 'יניב'; // כאן תוכל להוסיף מערכת התחברות
-                    if (task.partnerHandler !== currentEmployee && task.additionalEmployee !== currentEmployee) {
+                // סינון לפי הרשאות משתמש
+                if (currentUser.role === 'employee') {
+                    if (task.partnerHandler !== currentUser.name && task.additionalEmployee !== currentUser.name) {
                         return false;
                     }
                 }
-
+                
                 // סינון לפי חיפוש
                 const matchesSearch = !searchTerm || 
                     task.clientName.toLowerCase().includes(searchTerm) ||
                     task.partnerHandler.toLowerCase().includes(searchTerm) ||
                     task.taskType.toLowerCase().includes(searchTerm) ||
                     task.notes.toLowerCase().includes(searchTerm);
-
+                
                 // סינון לפי פילטרים
                 const matchesStatus = !statusFilter || task.status === statusFilter;
                 const matchesPriority = !priorityFilter || task.priority === priorityFilter;
-                const matchesType = !typeFilter || task.taskType === typeFilter;
-                const matchesEmployee = !employeeFilter || task.partnerHandler === employeeFilter;
-
-                return matchesSearch && matchesStatus && matchesPriority && matchesType && matchesEmployee;
+                
+                return matchesSearch && matchesStatus && matchesPriority;
             });
-
+            
             displayTasks(filteredTasks);
         }
 
@@ -837,13 +1366,13 @@
             if (tasksToShow.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #6c757d;">
-                        <h3>לא נמצאו משימות</h3>
+                        <h3>🔍 לא נמצאו משימות</h3>
                         <p>נסה לשנות את הפילטרים או הוסף משימה חדשה</p>
                     </div>
                 `;
                 return;
             }
-
+            
             container.innerHTML = tasksToShow.map(task => `
                 <div class="task-card ${getPriorityClass(task.priority)}" onclick="editTask(${task.id})">
                     <div class="task-header">
@@ -880,16 +1409,35 @@
                         </div>
                     </div>
                     
-                    ${task.notes ? `
-                        <div class="task-notes">
-                            📝 ${task.notes}
+                    ${task.notes || (task.comments && task.comments.length > 0) ? `
+                        <div class="task-notes" onclick="event.stopPropagation()">
+                            ${task.notes ? `<div class="notes-content">📝 ${task.notes}</div>` : ''}
+                            
+                            ${task.comments && task.comments.length > 0 ? `
+                                <div class="notes-comments">
+                                    <strong>💬 תגובות:</strong>
+                                    ${task.comments.map(comment => `
+                                        <div class="comment">
+                                            <span class="comment-author">${comment.author}:</span>
+                                            ${comment.text}
+                                            <span class="comment-time">${comment.time}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                            
+                            <div class="add-comment">
+                                <input type="text" class="comment-input" placeholder="הוסף תגובה..." 
+                                       id="comment-${task.id}" onkeypress="if(event.key==='Enter') addComment(${task.id}, 'comment-${task.id}')">
+                                <button class="comment-btn" onclick="addComment(${task.id}, 'comment-${task.id}')">💬</button>
+                            </div>
                         </div>
                     ` : ''}
                 </div>
             `).join('');
         }
 
-        // קבלת מחלקת CSS לעדיפות
+        // פונקציות עזר
         function getPriorityClass(priority) {
             switch (priority) {
                 case 'גבוהה': return 'high-priority';
@@ -899,7 +1447,6 @@
             }
         }
 
-        // קבלת מחלקת CSS לסטטוס
         function getStatusClass(status) {
             switch (status) {
                 case 'טרם התחיל': return 'status-not-started';
@@ -910,7 +1457,6 @@
             }
         }
 
-        // עיצוב תאריך
         function formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -919,210 +1465,63 @@
 
         // עדכון סטטיסטיקות
         function updateStats() {
-            if (currentUserType !== 'partner') return;
-
+            if (currentUser.role === 'employee') return;
+            
             const totalTasks = tasks.length;
             const completedTasks = tasks.filter(task => task.status === 'הושלם').length;
             const pendingTasks = tasks.filter(task => task.status !== 'הושלם').length;
             const highPriorityTasks = tasks.filter(task => task.priority === 'גבוהה').length;
-
+            
             document.getElementById('total-tasks').textContent = totalTasks;
             document.getElementById('completed-tasks').textContent = completedTasks;
             document.getElementById('pending-tasks').textContent = pendingTasks;
             document.getElementById('high-priority-tasks').textContent = highPriorityTasks;
         }
 
-        // פתיחת מודאל הוספת משימה
-        function openAddTaskModal() {
-            editingTaskId = null;
-            document.getElementById('modal-title').textContent = 'הוסף משימה חדשה';
-            document.getElementById('save-btn').textContent = 'שמור משימה';
-            document.getElementById('delete-btn').style.display = 'none';
-            
-            // איפוס הטופס
-            document.getElementById('task-form').reset();
-            document.getElementById('task-status').value = 'טרם התחיל';
-            
-            document.getElementById('task-modal').style.display = 'block';
-        }
-
-        // עריכת משימה
-        function editTask(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (!task) return;
-
-            editingTaskId = taskId;
-            document.getElementById('modal-title').textContent = 'עריכת משימה';
-            document.getElementById('save-btn').textContent = 'עדכן משימה';
-            document.getElementById('delete-btn').style.display = 'inline-block';
-
-            // מילוי הטופס בנתוני המשימה
-            document.getElementById('client-name').value = task.clientName;
-            document.getElementById('partner-handler').value = task.partnerHandler;
-            document.getElementById('additional-employee').value = task.additionalEmployee;
-            document.getElementById('task-type').value = task.taskType;
-            document.getElementById('task-status').value = task.status;
-            document.getElementById('priority').value = task.priority;
-            document.getElementById('due-date').value = task.dueDate;
-            document.getElementById('notes').value = task.notes;
-
-            document.getElementById('task-modal').style.display = 'block';
-        }
-
-        // סגירת מודאל
-        function closeModal() {
-            document.getElementById('task-modal').style.display = 'none';
-            editingTaskId = null;
-        }
-
-        // שמירת משימה
-        document.getElementById('task-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const taskData = {
-                clientName: document.getElementById('client-name').value,
-                partnerHandler: document.getElementById('partner-handler').value,
-                additionalEmployee: document.getElementById('additional-employee').value,
-                taskType: document.getElementById('task-type').value,
-                status: document.getElementById('task-status').value,
-                priority: document.getElementById('priority').value,
-                dueDate: document.getElementById('due-date').value,
-                notes: document.getElementById('notes').value,
-                createdDate: new Date().toLocaleDateString('he-IL')
-            };
-
-            try {
-                if (editingTaskId) {
-                    // עדכון משימה קיימת
-                    const taskIndex = tasks.findIndex(t => t.id === editingTaskId);
-                    if (taskIndex !== -1) {
-                        tasks[taskIndex] = { ...tasks[taskIndex], ...taskData };
-                    }
-                } else {
-                    // הוספת משימה חדשה
-                    const newTask = {
-                        ...taskData,
-                        id: tasks.length + 1
-                    };
-                    tasks.push(newTask);
-                }
-
-                // שמירה ל-Google Sheets (סימולציה)
-                await saveToGoogleSheets();
-                
-                closeModal();
-                filterTasks();
-                updateStats();
-                populateEmployeeFilter();
-                
-                alert(editingTaskId ? 'המשימה עודכנה בהצלחה!' : 'המשימה נוספה בהצלחה!');
-                
-            } catch (error) {
-                console.error('שגיאה בשמירת המשימה:', error);
-                alert('שגיאה בשמירת המשימה. אנא נסה שוב.');
-            }
-        });
-
-        // מחיקת משימה
-        function deleteTask() {
-            if (!editingTaskId) return;
-            
-            if (confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
-                tasks = tasks.filter(task => task.id !== editingTaskId);
-                closeModal();
-                filterTasks();
-                updateStats();
-                populateEmployeeFilter();
-                alert('המשימה נמחקה בהצלחה!');
-            }
-        }
-
         // שמירה ל-Google Sheets (סימולציה)
         async function saveToGoogleSheets() {
-            // כאן תוכל להוסיף את הקוד לשמירה ב-Google Sheets
-            // זה דורש הרשאות מתקדמות יותר מאשר API key פשוט
             console.log('שמירה ל-Google Sheets...', tasks);
-            
-            // סימולציה של השהיה
-            await new Promise(resolve => setTimeout(resolve, 500));
+            // כאן תוכל להוסיף את הקוד לשמירה ב-Google Sheets
         }
 
-        // סגירת מודאל בלחיצה על הרקע
-        document.getElementById('task-modal').addEventListener('click', function(e) {
+        // פונקציות ניהול (למצב שותף/מנהל)
+        function openUserManagement() {
+            alert('🔧 תכונת ניהול משתמשים בפיתוח');
+        }
+
+        function openTaskTypeManagement() {
+            alert('🔧 תכונת ניהול סוגי משימות בפיתוח');
+        }
+
+        function openReports() {
+            alert('📊 תכונת דוחות ומעקב בפיתוח');
+        }
+
+        function syncClients() {
+            alert('🔄 מסנכרן רשימת לקוחות...');
+            loadClients().then(() => {
+                alert('✅ רשימת הלקוחות עודכנה בהצלחה!');
+            }).catch(() => {
+                alert('❌ שגיאה בסנכרון לקוחות');
+            });
+        }
+
+        // סגירת מודאלים בלחיצה על הרקע
+        document.getElementById('edit-modal').addEventListener('click', function(e) {
             if (e.target === this) {
-                closeModal();
+                closeEditModal();
             }
         });
 
         // קיצורי מקלדת
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                closeModal();
-            }
-            if (e.ctrlKey && e.key === 'n') {
-                e.preventDefault();
-                openAddTaskModal();
+                closeEditModal();
+                if (!document.getElementById('add-task-form').classList.contains('hidden')) {
+                    cancelAddTask();
+                }
             }
         });
-
-        // רענון אוטומטי כל 5 דקות
-        setInterval(async function() {
-            try {
-                await loadData();
-                console.log('נתונים עודכנו אוטומטיות');
-            } catch (error) {
-                console.error('שגיאה ברענון אוטומטי:', error);
-            }
-        }, 5 * 60 * 1000);
-
-        // הוספת נתונים לדוגמה אם אין משימות
-        if (tasks.length === 0) {
-            tasks = [
-                {
-                    id: 1,
-                    clientName: 'חברת הטכנולוגיה בע"מ',
-                    partnerHandler: 'יניב',
-                    additionalEmployee: 'מיכל',
-                    taskType: 'פגישה',
-                    status: 'בתהליך',
-                    priority: 'גבוהה',
-                    dueDate: '2025-06-15',
-                    notes: 'פגישה חשובה לגבי פרויקט חדש',
-                    createdDate: '11/06/2025'
-                },
-                {
-                    id: 2,
-                    clientName: 'משרד עורכי דין כהן ושות',
-                    partnerHandler: 'אריק',
-                    additionalEmployee: '',
-                    taskType: 'מסמכים',
-                    status: 'טרם התחיל',
-                    priority: 'בינונית',
-                    dueDate: '2025-06-20',
-                    notes: 'הכנת מסמכים משפטיים',
-                    createdDate: '11/06/2025'
-                },
-                {
-                    id: 3,
-                    clientName: 'קבוצת נדל"ן פרימיום',
-                    partnerHandler: 'יניב',
-                    additionalEmployee: 'אבי',
-                    taskType: 'מעקב',
-                    status: 'הושלם',
-                    priority: 'נמוכה',
-                    dueDate: '2025-06-10',
-                    notes: 'מעקב אחר עסקת נדל"ן',
-                    createdDate: '05/06/2025'
-                }
-            ];
-            
-            // אתחול ראשוני
-            setTimeout(() => {
-                populateEmployeeFilter();
-                filterTasks();
-                updateStats();
-            }, 100);
-        }
     </script>
 </body>
 </html>
