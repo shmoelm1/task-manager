@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מערכת ניהול משימות</title>
     
-    <!-- ===== CSS מתחיל כאן ===== -->
     <style>
-        /* קובץ styles.css */
-
         * {
             margin: 0;
             padding: 0;
@@ -33,8 +30,8 @@
             display: block;
         }
 
-        /* מסך כניסה */
-        .login-container {
+        /* מסך בחירת תפקיד */
+        .role-selection-container {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -43,56 +40,65 @@
             padding: 20px;
         }
 
-        .login-container h1 {
+        .role-selection-container h1 {
             color: white;
             margin-bottom: 30px;
             font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-align: center;
         }
 
-        .login-form {
+        .role-selection {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .role-card {
             background: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 250px;
+            border: 3px solid transparent;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
             border-color: #667eea;
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
+        .role-icon {
+            font-size: 4em;
             margin-bottom: 20px;
         }
 
-        .checkbox-group input {
-            width: auto;
-            margin-left: 10px;
+        .role-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .role-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .role-features {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .role-features li {
+            margin-bottom: 8px;
+            color: #555;
         }
 
         /* כפתורים */
@@ -124,21 +130,6 @@
 
         .btn-secondary:hover {
             background: #e9ecef;
-        }
-
-        /* הודעות שגיאה */
-        .error-message {
-            color: #dc3545;
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .info-message {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-right: 4px solid #2196f3;
         }
 
         /* כותרת */
@@ -358,6 +349,16 @@
             font-style: italic;
         }
 
+        .no-tasks {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 1.2em;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         /* מודלים */
         .modal {
             display: none;
@@ -422,151 +423,34 @@
             justify-content: flex-end;
         }
 
-        /* חיפוש לקוחות */
-        .client-input-container {
-            position: relative;
-        }
-
-        .suggestions-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 2px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            display: none;
-        }
-
-        .suggestions-dropdown.active {
-            display: block;
-        }
-
-        .suggestion-item {
-            padding: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-
-        .suggestion-item:hover {
-            background: #f8f9fa;
-        }
-
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
-
-        /* הגדרות */
-        .settings-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            background: white;
-            border-radius: 15px;
-            padding: 5px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .settings-tab {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .settings-tab.active {
-            display: block;
-        }
-
-        .settings-tab h2 {
+        .form-group {
             margin-bottom: 20px;
-            color: #333;
         }
 
-        /* רשימות */
-        .users-list, .task-types-list, .clients-list {
-            margin-top: 20px;
-        }
-
-        .list-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .list-item-info {
-            flex: 1;
-        }
-
-        .list-item-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-small {
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 5px;
-        }
-
-        /* תגובות */
-        .comments-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-        }
-
-        .comment-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-right: 3px solid #667eea;
-        }
-
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .comment-author {
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
             font-weight: bold;
-            color: #667eea;
-        }
-
-        .comment-date {
-            color: #999;
-            font-size: 0.9em;
-        }
-
-        .comment-text {
             color: #555;
-            line-height: 1.5;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         /* עיצוב מיוחד לכפתורי פעולה במשימות */
@@ -606,99 +490,17 @@
             background: #c82333;
         }
 
-        /* עיצוב מיוחד לטעינה */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* אנימציות */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .task-card {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .stat-card {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        /* עיצוב נוסף לטפסים */
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-group textarea {
-            font-family: inherit;
-        }
-
-        /* עיצוב מיוחד לתאריכים שעברו */
-        .task-card.overdue {
-            border-right-color: #dc3545;
-            background: linear-gradient(135deg, #fff 0%, #ffe6e6 100%);
-        }
-
-        .overdue .task-client {
-            color: #dc3545;
-        }
-
-        /* עיצוב מיוחד למשימות דחופות */
-        .task-card.urgent {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            }
-            50% {
-                box-shadow: 0 5px 25px rgba(220, 53, 69, 0.3);
-            }
-            100% {
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            }
-        }
-
-        .no-tasks {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 1.2em;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
+            .role-selection {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .role-card {
+                min-width: 300px;
+            }
+            
             .action-bar {
                 flex-direction: column;
                 gap: 15px;
@@ -722,15 +524,6 @@
                 gap: 15px;
                 text-align: center;
             }
-            
-            .modal-content {
-                width: 95%;
-                margin: 10px;
-            }
-            
-            .settings-tabs {
-                flex-direction: column;
-            }
         }
 
         @media (max-width: 480px) {
@@ -738,46 +531,137 @@
                 grid-template-columns: 1fr;
             }
             
-            .user-info {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .login-form {
-                padding: 20px;
-            }
-            
-            .task-card {
-                padding: 15px;
-            }
-            
-            .modal-footer {
-                flex-direction: column;
+            .role-card {
+                min-width: 250px;
+                padding: 30px 20px;
             }
         }
+
+        /* אנימציות */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .task-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .stat-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .role-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* עיצוב מיוחד למשימות דחופות */
+        .task-card.urgent {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            50% {
+                box-shadow: 0 5px 25px rgba(220, 53, 69, 0.3);
+            }
+            100% {
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+        }
+
+        /* עיצוב מיוחד לתאריכים שעברו */
+        .task-card.overdue {
+            border-right-color: #dc3545;
+            background: linear-gradient(135deg, #fff 0%, #ffe6e6 100%);
+        }
+
+        .overdue .task-client {
+            color: #dc3545;
+        }
+
+        /* חיפוש לקוחות */
+        .client-input-container {
+            position: relative;
+        }
+
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .suggestions-dropdown.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f9fa;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
     </style>
-    <!-- ===== CSS נגמר כאן ===== -->
 </head>
 <body>
-    <!-- מסך כניסה -->
-    <div id="loginScreen" class="screen active">
-        <div class="login-container">
-            <h1>🎯 מערכת ניהול משימות</h1>
-            <div class="login-form">
-                <div class="form-group">
-                    <label>שם משתמש:</label>
-                    <input type="text" id="username" placeholder="הכנס שם משתמש">
+    <!-- מסך בחירת תפקיד -->
+    <div id="roleSelectionScreen" class="screen active">
+        <div class="role-selection-container">
+            <h1>🎯 ברוכים הבאים למערכת ניהול המשימות</h1>
+            <p style="color: white; font-size: 1.2em; margin-bottom: 40px; text-align: center;">בחר את התפקיד שלך כדי להתחיל:</p>
+            
+            <div class="role-selection">
+                <div class="role-card" onclick="selectRole('partner')">
+                    <div class="role-icon">👨‍💼</div>
+                    <div class="role-title">שותף / מנהל</div>
+                    <div class="role-description">גישה מלאה לכל המשימות וניהול המערכת</div>
+                    <ul class="role-features">
+                        <li>✅ צפייה בכל המשימות</li>
+                        <li>✅ דשבורד מנהלים</li>
+                        <li>✅ ניהול משתמשים</li>
+                        <li>✅ הגדרות מערכת</li>
+                        <li>✅ סטטיסטיקות מפורטות</li>
+                    </ul>
+                    <button class="btn-primary">היכנס כמנהל</button>
                 </div>
-                <div class="form-group">
-                    <label>סיסמה:</label>
-                    <input type="password" id="password" placeholder="הכנס סיסמה">
+
+                <div class="role-card" onclick="selectRole('employee')">
+                    <div class="role-icon">👨‍💻</div>
+                    <div class="role-title">עובד</div>
+                    <div class="role-description">גישה למשימות האישיות ועדכון סטטוס</div>
+                    <ul class="role-features">
+                        <li>✅ המשימות שלי</li>
+                        <li>✅ עדכון סטטוס</li>
+                        <li>✅ הוספת תגובות</li>
+                        <li>✅ הוספת משימות</li>
+                        <li>✅ סינון וחיפוש</li>
+                    </ul>
+                    <button class="btn-primary">היכנס כעובד</button>
                 </div>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="rememberMe">
-                    <label for="rememberMe">זכור אותי</label>
-                </div>
-                <button onclick="login()" class="btn-primary">כניסה</button>
-                <div id="loginError" class="error-message"></div>
             </div>
         </div>
     </div>
@@ -788,8 +672,8 @@
             <div class="header-content">
                 <h1>🎯 המשימות שלי</h1>
                 <div class="user-info">
-                    <span id="currentUserName"></span>
-                    <button onclick="logout()" class="btn-secondary">יציאה</button>
+                    <span id="currentUserName">עובד במערכת</span>
+                    <button onclick="goBackToRoleSelection()" class="btn-secondary">החלף תפקיד</button>
                 </div>
             </div>
         </div>
@@ -828,9 +712,9 @@
             <div class="header-content">
                 <h1>📊 דשבורד ניהול</h1>
                 <div class="user-info">
-                    <span id="currentPartnerName"></span>
-                    <button onclick="showSettings()" class="btn-secondary">⚙️ הגדרות</button>
-                    <button onclick="logout()" class="btn-secondary">יציאה</button>
+                    <span id="currentPartnerName">מנהל המערכת</span>
+                    <button onclick="showAddTaskModal()" class="btn-primary">➕ הוסף משימה</button>
+                    <button onclick="goBackToRoleSelection()" class="btn-secondary">החלף תפקיד</button>
                 </div>
             </div>
         </div>
@@ -858,7 +742,11 @@
 
             <!-- סרגל פעולות -->
             <div class="action-bar">
-                <button onclick="showAddTaskModal()" class="btn-primary">➕ הוסף משימה</button>
+                <div style="display: flex; gap: 15px;">
+                    <button onclick="showAddTaskModal()" class="btn-primary">➕ הוסף משימה</button>
+                    <button onclick="showSettings()" class="btn-secondary">⚙️ הגדרות</button>
+                    <button onclick="syncClients()" class="btn-secondary">🔄 סנכרן לקוחות</button>
+                </div>
                 <div class="filter-section">
                     <select id="employeeFilter" onchange="filterAllTasks()">
                         <option value="">כל העובדים</option>
@@ -886,55 +774,6 @@
         </div>
     </div>
 
-    <!-- מסך הגדרות -->
-    <div id="settingsScreen" class="screen">
-        <div class="header">
-            <div class="header-content">
-                <h1>⚙️ הגדרות מערכת</h1>
-                <button onclick="hideSettings()" class="btn-secondary">חזור</button>
-            </div>
-        </div>
-
-        <div class="main-content">
-            <div class="settings-tabs">
-                <button onclick="showSettingsTab('users')" class="tab-btn active">ניהול משתמשים</button>
-                <button onclick="showSettingsTab('taskTypes')" class="tab-btn">סוגי משימות</button>
-                <button onclick="showSettingsTab('clients')" class="tab-btn">לקוחות</button>
-            </div>
-
-            <!-- ניהול משתמשים -->
-            <div id="usersTab" class="settings-tab active">
-                <h2>ניהול משתמשים</h2>
-                <button onclick="showAddUserModal()" class="btn-primary">➕ הוסף משתמש</button>
-                <div id="usersList" class="users-list">
-                    <!-- רשימת משתמשים -->
-                </div>
-            </div>
-
-            <!-- סוגי משימות -->
-            <div id="taskTypesTab" class="settings-tab">
-                <h2>סוגי משימות</h2>
-                <button onclick="showAddTaskTypeModal()" class="btn-primary">➕ הוסף סוג משימה</button>
-                <div id="taskTypesList" class="task-types-list">
-                    <!-- רשימת סוגי משימות -->
-                </div>
-            </div>
-
-            <!-- לקוחות -->
-            <div id="clientsTab" class="settings-tab">
-                <h2>לקוחות</h2>
-                <button onclick="syncClients()" class="btn-primary">🔄 סנכרן לקוחות</button>
-                <div class="info-message">
-                    <p>הלקוחות מתסנכרנים אוטומטית מגוגל דרייב פעם בשבוע</p>
-                    <p>סנכרון אחרון: <span id="lastSyncDate">טרם בוצע</span></p>
-                </div>
-                <div id="clientsList" class="clients-list">
-                    <!-- רשימת לקוחות -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- מודל הוספת משימה -->
     <div id="addTaskModal" class="modal">
         <div class="modal-content">
@@ -953,20 +792,29 @@
                 <div class="form-group">
                     <label>שותף מטפל:</label>
                     <select id="assignedPartner">
-                        <!-- שותפים יטענו כאן -->
+                        <option value="מנהל המערכת">מנהל המערכת</option>
+                        <option value="שותף 1">שותף 1</option>
+                        <option value="שותף 2">שותף 2</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>עובד נוסף (אופציונלי):</label>
                     <select id="additionalEmployee">
                         <option value="">ללא</option>
-                        <!-- עובדים יטענו כאן -->
+                        <option value="עובד 1">עובד 1</option>
+                        <option value="עובד 2">עובד 2</option>
+                        <option value="עובד 3">עובד 3</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>סוג משימה:</label>
                     <select id="taskType">
-                        <!-- סוגי משימות יטענו כאן -->
+                        <option value="פגישת ייעוץ">פגישת ייעוץ</option>
+                        <option value="הכנת הצעת מחיר">הכנת הצעת מחיר</option>
+                        <option value="מעקב הזמנה">מעקב הזמנה</option>
+                        <option value="שירות לקוחות">שירות לקוחות</option>
+                        <option value="תיקון תקלה">תיקון תקלה</option>
+                        <option value="פיתוח מוצר">פיתוח מוצר</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1027,65 +875,7 @@
         </div>
     </div>
 
-    <!-- מודל הוספת משתמש -->
-    <div id="addUserModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>הוסף משתמש חדש</h2>
-                <span class="close" onclick="hideAddUserModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>שם משתמש:</label>
-                    <input type="text" id="newUsername" placeholder="הכנס שם משתמש">
-                </div>
-                <div class="form-group">
-                    <label>סיסמה:</label>
-                    <input type="password" id="newPassword" placeholder="הכנס סיסמה">
-                </div>
-                <div class="form-group">
-                    <label>סוג משתמש:</label>
-                    <select id="userType">
-                        <option value="employee">עובד</option>
-                        <option value="partner">שותף</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>שם מלא:</label>
-                    <input type="text" id="fullName" placeholder="הכנס שם מלא">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="addUser()" class="btn-primary">הוסף</button>
-                <button onclick="hideAddUserModal()" class="btn-secondary">ביטול</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- מודל הוספת סוג משימה -->
-    <div id="addTaskTypeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>הוסף סוג משימה</h2>
-                <span class="close" onclick="hideAddTaskTypeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>שם סוג המשימה:</label>
-                    <input type="text" id="newTaskTypeName" placeholder="הכנס שם סוג משימה">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button onclick="addTaskType()" class="btn-primary">הוסף</button>
-                <button onclick="hideAddTaskTypeModal()" class="btn-secondary">ביטול</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== JAVASCRIPT מתחיל כאן ===== -->
     <script>
-        // קובץ script.js - מערכת ניהול משימות
-
         // הגדרות Google Sheets API
         const API_KEY = 'AIzaSyDR6k3fBY1aZXW_UhVoCC2N34nKpVDX3vo';
         const CLIENTS_SHEET_ID = '1rZvtny_hfa-7VvV0MzkPMGssLIUUVDm6';
@@ -1094,94 +884,139 @@
         // משתנים גלובליים
         let currentUser = null;
         let allTasks = [];
-        let allUsers = [];
         let allClients = [];
-        let allTaskTypes = [];
         let currentEditingTask = null;
 
         // אתחול המערכת
         document.addEventListener('DOMContentLoaded', function() {
             console.log('מערכת ניהול משימות מתחילה...');
-            
-            // בדיקת זכירת משתמש
-            checkRememberedUser();
-            
-            // טעינת נתונים בסיסיים
             initializeDefaultData();
         });
 
-        // בדיקת משתמש שמור
-        function checkRememberedUser() {
-            const rememberedUser = JSON.parse(localStorage.getItem('rememberedUser') || 'null');
-            if (rememberedUser) {
-                currentUser = rememberedUser;
-                showUserScreen();
-            }
-        }
-
-        // כניסה למערכת
-        async function login() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const rememberMe = document.getElementById('rememberMe').checked;
-            
-            if (!username || !password) {
-                showError('loginError', 'נא להזין שם משתמש וסיסמה');
-                return;
-            }
-            
-            try {
-                // טעינת משתמשים מ-Google Sheets
-                await loadUsers();
-                
-                // חיפוש המשתמש
-                const user = allUsers.find(u => u.username === username && u.password === password);
-                
-                if (user) {
-                    currentUser = user;
-                    
-                    // שמירת משתמש אם נבחר "זכור אותי"
-                    if (rememberMe) {
-                        localStorage.setItem('rememberedUser', JSON.stringify(user));
+        // אתחול נתונים ברירת מחדל
+        function initializeDefaultData() {
+            // משימות לדוגמה
+            if (!localStorage.getItem('tasks')) {
+                const sampleTasks = [
+                    {
+                        id: 1,
+                        client: 'חברת אבג בע"מ',
+                        assignedPartner: 'מנהל המערכת',
+                        additionalEmployee: 'עובד 1',
+                        taskType: 'פגישת ייעוץ',
+                        status: 'בביצוע',
+                        priority: 'גבוהה',
+                        dueDate: '2024-12-25',
+                        notes: 'פגישה חשובה עם הלקוח לגבי הפרויקט החדש',
+                        createdBy: 'מנהל המערכת',
+                        createdDate: '2024-12-15',
+                        comments: [
+                            {
+                                id: 1,
+                                author: 'מנהל המערכת',
+                                text: 'הלקוח מעוניין להקדים את הפגישה',
+                                date: '2024-12-16'
+                            }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        client: 'מטרו סופר',
+                        assignedPartner: 'שותף 1',
+                        additionalEmployee: '',
+                        taskType: 'הכנת הצעת מחיר',
+                        status: 'טרם התחיל',
+                        priority: 'בינונית',
+                        dueDate: '2024-12-30',
+                        notes: 'הצעת מחיר למערכת קופות חדשה',
+                        createdBy: 'שותף 1',
+                        createdDate: '2024-12-14',
+                        comments: []
+                    },
+                    {
+                        id: 3,
+                        client: 'רשת פיצוחיה',
+                        assignedPartner: 'מנהל המערכת',
+                        additionalEmployee: 'עובד 2',
+                        taskType: 'תיקון תקלה',
+                        status: 'הושלם',
+                        priority: 'גבוהה',
+                        dueDate: '2024-12-20',
+                        notes: 'תיקון תקלה דחופה במערכת הזמנות',
+                        createdBy: 'עובד 2',
+                        createdDate: '2024-12-10',
+                        comments: [
+                            {
+                                id: 1,
+                                author: 'עובד 2',
+                                text: 'התקלה תוקנה בהצלחה',
+                                date: '2024-12-19'
+                            }
+                        ]
                     }
-                    
-                    showUserScreen();
-                    clearError('loginError');
-                } else {
-                    showError('loginError', 'שם משתמש או סיסמה שגויים');
-                }
-            } catch (error) {
-                console.error('שגיאה בכניסה:', error);
-                showError('loginError', 'שגיאה בחיבור למערכת');
+                ];
+                localStorage.setItem('tasks', JSON.stringify(sampleTasks));
             }
+
+            // לקוחות לדוגמה
+            if (!localStorage.getItem('clients')) {
+                const sampleClients = [
+                    { name: 'חברת אבג בע"מ', details: 'חברת הייטק מובילה' },
+                    { name: 'מטרו סופר', details: 'רשת סופרמרקטים' },
+                    { name: 'רשת פיצוחיה', details: 'רשת מזון מהיר' },
+                    { name: 'בנק הדוגמה', details: 'מוסד פיננסי' },
+                    { name: 'חברת הבנייה', details: 'קבלנות וביצוע' }
+                ];
+                localStorage.setItem('clients', JSON.stringify(sampleClients));
+            }
+
+            // טעינת נתונים לזיכרון
+            allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+            allClients = JSON.parse(localStorage.getItem('clients') || '[]');
         }
 
-        // יציאה מהמערכת
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('rememberedUser');
-            hideAllScreens();
-            document.getElementById('loginScreen').classList.add('active');
-            
-            // ניקוי טפסים
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('rememberMe').checked = false;
-        }
-
-        // הצגת מסך המשתמש המתאים
-        function showUserScreen() {
-            hideAllScreens();
-            
-            if (currentUser.type === 'partner') {
-                document.getElementById('partnerScreen').classList.add('active');
-                document.getElementById('currentPartnerName').textContent = currentUser.fullName;
-                loadPartnerDashboard();
+        // בחירת תפקיד
+        function selectRole(role) {
+            if (role === 'partner') {
+                currentUser = {
+                    id: 1,
+                    username: 'admin',
+                    type: 'partner',
+                    fullName: 'מנהל המערכת'
+                };
+                showPartnerScreen();
             } else {
-                document.getElementById('employeeScreen').classList.add('active');
-                document.getElementById('currentUserName').textContent = currentUser.fullName;
-                loadEmployeeTasks();
+                currentUser = {
+                    id: 2,
+                    username: 'employee',
+                    type: 'employee',
+                    fullName: 'עובד במערכת'
+                };
+                showEmployeeScreen();
             }
+        }
+
+        // הצגת מסך שותף
+        function showPartnerScreen() {
+            hideAllScreens();
+            document.getElementById('partnerScreen').classList.add('active');
+            document.getElementById('currentPartnerName').textContent = currentUser.fullName;
+            loadPartnerDashboard();
+        }
+
+        // הצגת מסך עובד
+        function showEmployeeScreen() {
+            hideAllScreens();
+            document.getElementById('employeeScreen').classList.add('active');
+            document.getElementById('currentUserName').textContent = currentUser.fullName;
+            loadEmployeeTasks();
+        }
+
+        // חזרה לבחירת תפקיד
+        function goBackToRoleSelection() {
+            currentUser = null;
+            hideAllScreens();
+            document.getElementById('roleSelectionScreen').classList.add('active');
         }
 
         // הסתרת כל המסכים
@@ -1191,222 +1026,17 @@
             });
         }
 
-        // טעינת נתונים ראשוניים
-        function initializeDefaultData() {
-            // משתמשים ברירת מחדל
-            if (!localStorage.getItem('users')) {
-                const defaultUsers = [
-                    {
-                        id: 1,
-                        username: 'admin',
-                        password: 'admin123',
-                        type: 'partner',
-                        fullName: 'מנהל המערכת'
-                    },
-                    {
-                        id: 2,
-                        username: 'employee1',
-                        password: 'emp123',
-                        type: 'employee',
-                        fullName: 'עובד לדוגמה'
-                    }
-                ];
-                localStorage.setItem('users', JSON.stringify(defaultUsers));
-            }
-            
-            // סוגי משימות ברירת מחדל
-            if (!localStorage.getItem('taskTypes')) {
-                const defaultTaskTypes = [
-                    'פגישת ייעוץ',
-                    'הכנת הצעת מחיר',
-                    'מעקב הזמנה',
-                    'שירות לקוחות',
-                    'תיקון תקלה',
-                    'פיתוח מוצר'
-                ];
-                localStorage.setItem('taskTypes', JSON.stringify(defaultTaskTypes));
-            }
-        }
-
-        // טעינת משתמשים
-        async function loadUsers() {
-            try {
-                // ניסיון טעינה מ-Google Sheets
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${TASKS_SHEET_ID}/values/Users!A:E?key=${API_KEY}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.values && data.values.length > 1) {
-                        allUsers = data.values.slice(1).map((row, index) => ({
-                            id: index + 1,
-                            username: row[0] || '',
-                            password: row[1] || '',
-                            type: row[2] || 'employee',
-                            fullName: row[3] || '',
-                            active: row[4] !== 'false'
-                        }));
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.log('לא ניתן לטעון משתמשים מ-Google Sheets, משתמש בנתונים מקומיים');
-            }
-            
-            // טעינה מה-localStorage כגיבוי
-            allUsers = JSON.parse(localStorage.getItem('users') || '[]');
-        }
-
-        // טעינת לקוחות מ-Google Sheets
-        async function loadClients() {
-            try {
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CLIENTS_SHEET_ID}/values/A:B?key=${API_KEY}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.values && data.values.length > 1) {
-                        allClients = data.values.slice(1).map(row => ({
-                            name: row[0] || '',
-                            details: row[1] || ''
-                        })).filter(client => client.name.trim());
-                        
-                        // שמירה מקומית
-                        localStorage.setItem('clients', JSON.stringify(allClients));
-                        localStorage.setItem('lastClientSync', new Date().toISOString());
-                        
-                        console.log(`נטענו ${allClients.length} לקוחות מ-Google Sheets`);
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.error('שגיאה בטעינת לקוחות:', error);
-            }
-            
-            // טעינה מה-localStorage כגיבוי
-            allClients = JSON.parse(localStorage.getItem('clients') || '[]');
-            console.log(`נטענו ${allClients.length} לקוחות מנתונים מקומיים`);
-        }
-
-        // טעינת משימות מ-Google Sheets
-        async function loadTasks() {
-            try {
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${TASKS_SHEET_ID}/values/Tasks!A:K?key=${API_KEY}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.values && data.values.length > 1) {
-                        allTasks = data.values.slice(1).map((row, index) => ({
-                            id: index + 1,
-                            client: row[0] || '',
-                            assignedPartner: row[1] || '',
-                            additionalEmployee: row[2] || '',
-                            taskType: row[3] || '',
-                            status: row[4] || 'טרם התחיל',
-                            priority: row[5] || 'בינונית',
-                            dueDate: row[6] || '',
-                            notes: row[7] || '',
-                            createdBy: row[8] || '',
-                            createdDate: row[9] || new Date().toISOString().split('T')[0],
-                            comments: JSON.parse(row[10] || '[]')
-                        }));
-                        
-                        // שמירה מקומית
-                        localStorage.setItem('tasks', JSON.stringify(allTasks));
-                        return;
-                    }
-                }
-            } catch (error) {
-                console.error('שגיאה בטעינת משימות:', error);
-            }
-            
-            // טעינה מה-localStorage כגיבוי
-            allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        }
-
-        // שמירת משימות ל-Google Sheets
-        async function saveTasks() {
-            try {
-                // שמירה מקומית תמיד
-                localStorage.setItem('tasks', JSON.stringify(allTasks));
-                
-                // הכנת נתונים ל-Google Sheets
-                const values = [
-                    ['לקוח', 'שותף מטפל', 'עובד נוסף', 'סוג משימה', 'סטטוס', 'עדיפות', 'תאריך יעד', 'הערות', 'נוצר על ידי', 'תאריך יצירה', 'תגובות']
-                ];
-                
-                allTasks.forEach(task => {
-                    values.push([
-                        task.client,
-                        task.assignedPartner,
-                        task.additionalEmployee,
-                        task.taskType,
-                        task.status,
-                        task.priority,
-                        task.dueDate,
-                        task.notes,
-                        task.createdBy,
-                        task.createdDate,
-                        JSON.stringify(task.comments || [])
-                    ]);
-                });
-                
-                // שליחה ל-Google Sheets (דורש authentication מתקדם)
-                console.log('נתונים נשמרו מקומית, לשליחה ל-Google Sheets נדרש setup נוסף');
-                
-            } catch (error) {
-                console.error('שגיאה בשמירת משימות:', error);
-                // המשיכות עם שמירה מקומית
-                localStorage.setItem('tasks', JSON.stringify(allTasks));
-            }
-        }
-
-        // טעינת סוגי משימות
-        function loadTaskTypes() {
-            allTaskTypes = JSON.parse(localStorage.getItem('taskTypes') || '[]');
-        }
-
         // טעינת דשבורד שותף
-        async function loadPartnerDashboard() {
-            showLoading();
-            
-            try {
-                await Promise.all([
-                    loadClients(),
-                    loadTasks(),
-                    loadUsers(),
-                    loadTaskTypes()
-                ]);
-                
-                updateStatistics();
-                populateFilters();
-                displayAllTasks();
-                
-            } catch (error) {
-                console.error('שגיאה בטעינת דשבורד:', error);
-            } finally {
-                hideLoading();
-            }
+        function loadPartnerDashboard() {
+            updateStatistics();
+            displayAllTasks();
+            loadClients();
         }
 
         // טעינת משימות עובד
-        async function loadEmployeeTasks() {
-            showLoading();
-            
-            try {
-                await Promise.all([
-                    loadClients(),
-                    loadTasks(),
-                    loadUsers(),
-                    loadTaskTypes()
-                ]);
-                
-                populateEmployeeFilters();
-                displayEmployeeTasks();
-                
-            } catch (error) {
-                console.error('שגיאה בטעינת משימות עובד:', error);
-            } finally {
-                hideLoading();
-            }
+        function loadEmployeeTasks() {
+            displayEmployeeTasks();
+            loadClients();
         }
 
         // עדכון סטטיסטיקות
@@ -1420,26 +1050,6 @@
             document.getElementById('inProgressTasks').textContent = inProgress;
             document.getElementById('completedTasks').textContent = completed;
             document.getElementById('urgentTasks').textContent = urgent;
-        }
-
-        // מילוי פילטרים
-        function populateFilters() {
-            // פילטר עובדים
-            const employeeFilter = document.getElementById('employeeFilter');
-            employeeFilter.innerHTML = '<option value="">כל העובדים</option>';
-            
-            const employees = allUsers.filter(u => u.type === 'employee');
-            employees.forEach(emp => {
-                const option = document.createElement('option');
-                option.value = emp.fullName;
-                option.textContent = emp.fullName;
-                employeeFilter.appendChild(option);
-            });
-        }
-
-        // מילוי פילטרים לעובד
-        function populateEmployeeFilters() {
-            // כרגע אין צורך בפילטרים מיוחדים לעובד
         }
 
         // הצגת כל המשימות (שותף)
@@ -1465,7 +1075,8 @@
             
             const userTasks = allTasks.filter(task => 
                 task.assignedPartner === currentUser.fullName || 
-                task.additionalEmployee === currentUser.fullName
+                task.additionalEmployee === currentUser.fullName ||
+                task.createdBy === currentUser.fullName
             );
             
             if (userTasks.length === 0) {
@@ -1570,63 +1181,31 @@
         }
 
         // הצגת מודל הוספת משימה
-        async function showAddTaskModal() {
-            // טעינת נתונים אם צריך
-            if (allClients.length === 0) await loadClients();
-            if (allUsers.length === 0) await loadUsers();
-            if (allTaskTypes.length === 0) loadTaskTypes();
-            
-            // מילוי רשימות
-            populateAddTaskForm();
-            
-            // הצגת המודל
+        function showAddTaskModal() {
             document.getElementById('addTaskModal').classList.add('active');
             
-            // מיקוד בשדה לקוח
-            document.getElementById('clientInput').focus();
-        }
-
-        // מילוי טופס הוספת משימה
-        function populateAddTaskForm() {
-            // שותפים
-            const partnerSelect = document.getElementById('assignedPartner');
-            partnerSelect.innerHTML = '';
-            
-            const partners = allUsers.filter(u => u.type === 'partner');
-            partners.forEach(partner => {
-                const option = document.createElement('option');
-                option.value = partner.fullName;
-                option.textContent = partner.fullName;
-                partnerSelect.appendChild(option);
-            });
-            
-            // עובדים נוספים
-            const employeeSelect = document.getElementById('additionalEmployee');
-            employeeSelect.innerHTML = '<option value="">ללא</option>';
-            
-            const employees = allUsers.filter(u => u.type === 'employee');
-            employees.forEach(employee => {
-                const option = document.createElement('option');
-                option.value = employee.fullName;
-                option.textContent = employee.fullName;
-                employeeSelect.appendChild(option);
-            });
-            
-            // סוגי משימות
-            const taskTypeSelect = document.getElementById('taskType');
-            taskTypeSelect.innerHTML = '';
-            
-            allTaskTypes.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type;
-                option.textContent = type;
-                taskTypeSelect.appendChild(option);
-            });
-            
-            // תאריך ברירת מחדל (מחר)
+            // הגדרת תאריך ברירת מחדל (מחר)
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('dueDate').value = tomorrow.toISOString().split('T')[0];
+        }
+
+        // הסתרת מודל הוספת משימה
+        function hideAddTaskModal() {
+            document.getElementById('addTaskModal').classList.remove('active');
+            clearAddTaskForm();
+        }
+
+        // ניקוי טופס הוספת משימה
+        function clearAddTaskForm() {
+            document.getElementById('clientInput').value = '';
+            document.getElementById('assignedPartner').selectedIndex = 0;
+            document.getElementById('additionalEmployee').selectedIndex = 0;
+            document.getElementById('taskType').selectedIndex = 0;
+            document.getElementById('priority').selectedIndex = 1;
+            document.getElementById('dueDate').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('clientSuggestions').classList.remove('active');
         }
 
         // חיפוש לקוחות
@@ -1666,7 +1245,7 @@
         }
 
         // הוספת משימה
-        async function addTask() {
+        function addTask() {
             const client = document.getElementById('clientInput').value.trim();
             const assignedPartner = document.getElementById('assignedPartner').value;
             const additionalEmployee = document.getElementById('additionalEmployee').value;
@@ -1675,13 +1254,11 @@
             const dueDate = document.getElementById('dueDate').value;
             const notes = document.getElementById('notes').value.trim();
             
-            // ולידציה
             if (!client || !assignedPartner || !taskType || !dueDate) {
                 alert('נא למלא את כל השדות החובה');
                 return;
             }
             
-            // יצירת משימה חדשה
             const newTask = {
                 id: allTasks.length > 0 ? Math.max(...allTasks.map(t => t.id)) + 1 : 1,
                 client,
@@ -1697,13 +1274,9 @@
                 comments: []
             };
             
-            // הוספה לרשימה
             allTasks.push(newTask);
+            localStorage.setItem('tasks', JSON.stringify(allTasks));
             
-            // שמירה
-            await saveTasks();
-            
-            // רענון התצוגה
             if (currentUser.type === 'partner') {
                 updateStatistics();
                 displayAllTasks();
@@ -1711,30 +1284,8 @@
                 displayEmployeeTasks();
             }
             
-            // סגירת המודל
             hideAddTaskModal();
-            
-            // ניקוי הטופס
-            clearAddTaskForm();
-            
             alert('המשימה נוספה בהצלחה!');
-        }
-
-        // ניקוי טופס הוספת משימה
-        function clearAddTaskForm() {
-            document.getElementById('clientInput').value = '';
-            document.getElementById('assignedPartner').selectedIndex = 0;
-            document.getElementById('additionalEmployee').selectedIndex = 0;
-            document.getElementById('taskType').selectedIndex = 0;
-            document.getElementById('priority').selectedIndex = 1; // בינונית
-            document.getElementById('dueDate').value = '';
-            document.getElementById('notes').value = '';
-            document.getElementById('clientSuggestions').classList.remove('active');
-        }
-
-        // הסתרת מודל הוספת משימה
-        function hideAddTaskModal() {
-            document.getElementById('addTaskModal').classList.remove('active');
         }
 
         // עריכת משימה
@@ -1744,14 +1295,10 @@
             
             currentEditingTask = task;
             
-            // מילוי הטופס
             document.getElementById('editStatus').value = task.status;
             document.getElementById('editNotes').value = '';
             
-            // הצגת תגובות קיימות
             displayComments(task.comments || []);
-            
-            // הצגת המודל
             document.getElementById('editTaskModal').classList.add('active');
         }
 
@@ -1767,29 +1314,28 @@
             
             comments.forEach(comment => {
                 const commentDiv = document.createElement('div');
-                commentDiv.className = 'comment-item';
                 commentDiv.innerHTML = `
-                    <div class="comment-header">
-                        <span class="comment-author">${comment.author}</span>
-                        <span class="comment-date">${formatDate(comment.date)}</span>
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-right: 3px solid #667eea;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-weight: bold; color: #667eea;">${comment.author}</span>
+                            <span style="color: #999; font-size: 0.9em;">${formatDate(comment.date)}</span>
+                        </div>
+                        <div style="color: #555; line-height: 1.5;">${comment.text}</div>
                     </div>
-                    <div class="comment-text">${comment.text}</div>
                 `;
                 commentsList.appendChild(commentDiv);
             });
         }
 
         // עדכון משימה
-        async function updateTask() {
+        function updateTask() {
             if (!currentEditingTask) return;
             
             const newStatus = document.getElementById('editStatus').value;
             const newNotes = document.getElementById('editNotes').value.trim();
             
-            // עדכון סטטוס
             currentEditingTask.status = newStatus;
             
-            // הוספת הערות חדשות למשימה אם יש
             if (newNotes) {
                 if (!currentEditingTask.notes) {
                     currentEditingTask.notes = newNotes;
@@ -1798,10 +1344,8 @@
                 }
             }
             
-            // שמירה
-            await saveTasks();
+            localStorage.setItem('tasks', JSON.stringify(allTasks));
             
-            // רענון התצוגה
             if (currentUser.type === 'partner') {
                 updateStatistics();
                 displayAllTasks();
@@ -1809,9 +1353,7 @@
                 displayEmployeeTasks();
             }
             
-            // סגירת המודל
             hideEditTaskModal();
-            
             alert('המשימה עודכנה בהצלחה!');
         }
 
@@ -1826,7 +1368,6 @@
                 return;
             }
             
-            // יצירת תגובה חדשה
             const newComment = {
                 id: Date.now(),
                 author: currentUser.fullName,
@@ -1834,18 +1375,15 @@
                 date: new Date().toISOString().split('T')[0]
             };
             
-            // הוספה לרשימת התגובות
             if (!currentEditingTask.comments) {
                 currentEditingTask.comments = [];
             }
             currentEditingTask.comments.push(newComment);
             
-            // עדכון התצוגה
             displayComments(currentEditingTask.comments);
-            
-            // ניקוי שדה הטקסט
             document.getElementById('editNotes').value = '';
             
+            localStorage.setItem('tasks', JSON.stringify(allTasks));
             alert('התגובה נוספה בהצלחה!');
         }
 
@@ -1856,18 +1394,14 @@
         }
 
         // מחיקת משימה
-        async function deleteTask(taskId) {
+        function deleteTask(taskId) {
             if (!confirm('האם אתה בטוח שברצונך למחוק את המשימה?')) {
                 return;
             }
             
-            // הסרה מהרשימה
             allTasks = allTasks.filter(t => t.id !== taskId);
+            localStorage.setItem('tasks', JSON.stringify(allTasks));
             
-            // שמירה
-            await saveTasks();
-            
-            // רענון התצוגה
             if (currentUser.type === 'partner') {
                 updateStatistics();
                 displayAllTasks();
@@ -1885,7 +1419,8 @@
             
             const userTasks = allTasks.filter(task => {
                 const isUserTask = task.assignedPartner === currentUser.fullName || 
-                                  task.additionalEmployee === currentUser.fullName;
+                                  task.additionalEmployee === currentUser.fullName ||
+                                  task.createdBy === currentUser.fullName;
                 
                 const statusMatch = !statusFilter || task.status === statusFilter;
                 const priorityMatch = !priorityFilter || task.priority === priorityFilter;
@@ -1934,403 +1469,56 @@
             });
         }
 
-        // הצגת הגדרות
-        function showSettings() {
-            hideAllScreens();
-            document.getElementById('settingsScreen').classList.add('active');
-            
-            // טעינת נתונים להגדרות
-            loadSettingsData();
-        }
-
-        // הסתרת הגדרות
-        function hideSettings() {
-            hideAllScreens();
-            document.getElementById('partnerScreen').classList.add('active');
-        }
-
-        // טעינת נתונים להגדרות
-        async function loadSettingsData() {
-            await loadUsers();
-            loadTaskTypes();
-            await loadClients();
-            
-            displayUsers();
-            displayTaskTypes();
-            displayClients();
-            
-            // עדכון תאריך סנכרון אחרון
-            const lastSync = localStorage.getItem('lastClientSync');
-            if (lastSync) {
-                document.getElementById('lastSyncDate').textContent = formatDate(lastSync);
+        // טעינת לקוחות מ-Google Sheets
+        async function loadClients() {
+            try {
+                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CLIENTS_SHEET_ID}/values/A:B?key=${API_KEY}`);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.values && data.values.length > 1) {
+                        allClients = data.values.slice(1).map(row => ({
+                            name: row[0] || '',
+                            details: row[1] || ''
+                        })).filter(client => client.name.trim());
+                        
+                        localStorage.setItem('clients', JSON.stringify(allClients));
+                        console.log(`נטענו ${allClients.length} לקוחות מ-Google Sheets`);
+                    }
+                }
+            } catch (error) {
+                console.log('משתמש בלקוחות מקומיים');
+                allClients = JSON.parse(localStorage.getItem('clients') || '[]');
             }
-        }
-
-        // הצגת משתמשים
-        function displayUsers() {
-            const container = document.getElementById('usersList');
-            container.innerHTML = '';
-            
-            allUsers.forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.className = 'list-item';
-                userDiv.innerHTML = `
-                    <div class="list-item-info">
-                        <strong>${user.fullName}</strong><br>
-                        <small>שם משתמש: ${user.username} | סוג: ${user.type === 'partner' ? 'שותף' : 'עובד'}</small>
-                    </div>
-                    <div class="list-item-actions">
-                        <button class="btn-small btn-edit" onclick="editUser(${user.id})">ערוך</button>
-                        <button class="btn-small btn-delete" onclick="deleteUser(${user.id})">מחק</button>
-                    </div>
-                `;
-                container.appendChild(userDiv);
-            });
-        }
-
-        // הצגת סוגי משימות
-        function displayTaskTypes() {
-            const container = document.getElementById('taskTypesList');
-            container.innerHTML = '';
-            
-            allTaskTypes.forEach((type, index) => {
-                const typeDiv = document.createElement('div');
-                typeDiv.className = 'list-item';
-                typeDiv.innerHTML = `
-                    <div class="list-item-info">
-                        <strong>${type}</strong>
-                    </div>
-                    <div class="list-item-actions">
-                        <button class="btn-small btn-delete" onclick="deleteTaskType(${index})">מחק</button>
-                    </div>
-                `;
-                container.appendChild(typeDiv);
-            });
-        }
-
-        // הצגת לקוחות
-        function displayClients() {
-            const container = document.getElementById('clientsList');
-            container.innerHTML = '';
-            
-            allClients.slice(0, 50).forEach(client => { // הצגת 50 ראשונים
-                const clientDiv = document.createElement('div');
-                clientDiv.className = 'list-item';
-                clientDiv.innerHTML = `
-                    <div class="list-item-info">
-                        <strong>${client.name}</strong>
-                        ${client.details ? `<br><small>${client.details}</small>` : ''}
-                    </div>
-                `;
-                container.appendChild(clientDiv);
-            });
-            
-            if (allClients.length > 50) {
-                const moreDiv = document.createElement('div');
-                moreDiv.className = 'list-item';
-                moreDiv.innerHTML = `<div class="list-item-info">ועוד ${allClients.length - 50} לקוחות...</div>`;
-                container.appendChild(moreDiv);
-            }
-        }
-
-        // הצגת טאבים בהגדרות
-        function showSettingsTab(tabName) {
-            // הסתרת כל הטאבים
-            document.querySelectorAll('.settings-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // הצגת הטאב הנבחר
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        // הצגת מודל הוספת משתמש
-        function showAddUserModal() {
-            document.getElementById('addUserModal').classList.add('active');
-        }
-
-        // הסתרת מודל הוספת משתמש
-        function hideAddUserModal() {
-            document.getElementById('addUserModal').classList.remove('active');
-            clearAddUserForm();
-        }
-
-        // ניקוי טופס הוספת משתמש
-        function clearAddUserForm() {
-            document.getElementById('newUsername').value = '';
-            document.getElementById('newPassword').value = '';
-            document.getElementById('userType').selectedIndex = 0;
-            document.getElementById('fullName').value = '';
-        }
-
-        // הוספת משתמש
-        async function addUser() {
-            const username = document.getElementById('newUsername').value.trim();
-            const password = document.getElementById('newPassword').value.trim();
-            const type = document.getElementById('userType').value;
-            const fullName = document.getElementById('fullName').value.trim();
-            
-            // ולידציה
-            if (!username || !password || !fullName) {
-                alert('נא למלא את כל השדות');
-                return;
-            }
-            
-            // בדיקת שם משתמש קיים
-            if (allUsers.some(u => u.username === username)) {
-                alert('שם המשתמש כבר קיים');
-                return;
-            }
-            
-            // יצירת משתמש חדש
-            const newUser = {
-                id: allUsers.length > 0 ? Math.max(...allUsers.map(u => u.id)) + 1 : 1,
-                username,
-                password,
-                type,
-                fullName,
-                active: true
-            };
-            
-            // הוספה לרשימה
-            allUsers.push(newUser);
-            
-            // שמירה
-            localStorage.setItem('users', JSON.stringify(allUsers));
-            
-            // רענון התצוגה
-            displayUsers();
-            
-            // סגירת המודל
-            hideAddUserModal();
-            
-            alert('המשתמש נוסף בהצלחה!');
-        }
-
-        // מחיקת משתמש
-        function deleteUser(userId) {
-            if (userId === 1) { // הגנה על מנהל ראשי
-                alert('לא ניתן למחוק את מנהל המערכת');
-                return;
-            }
-            
-            if (!confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
-                return;
-            }
-            
-            allUsers = allUsers.filter(u => u.id !== userId);
-            localStorage.setItem('users', JSON.stringify(allUsers));
-            displayUsers();
-            
-            alert('המשתמש נמחק בהצלחה!');
-        }
-
-        // הצגת מודל הוספת סוג משימה
-        function showAddTaskTypeModal() {
-            document.getElementById('addTaskTypeModal').classList.add('active');
-        }
-
-        // הסתרת מודל הוספת סוג משימה
-        function hideAddTaskTypeModal() {
-            document.getElementById('addTaskTypeModal').classList.remove('active');
-            document.getElementById('newTaskTypeName').value = '';
-        }
-
-        // הוספת סוג משימה
-        function addTaskType() {
-            const typeName = document.getElementById('newTaskTypeName').value.trim();
-            
-            if (!typeName) {
-                alert('נא להזין שם לסוג המשימה');
-                return;
-            }
-            
-            if (allTaskTypes.includes(typeName)) {
-                alert('סוג המשימה כבר קיים');
-                return;
-            }
-            
-            allTaskTypes.push(typeName);
-            localStorage.setItem('taskTypes', JSON.stringify(allTaskTypes));
-            
-            displayTaskTypes();
-            hideAddTaskTypeModal();
-            
-            alert('סוג המשימה נוסף בהצלחה!');
-        }
-
-        // מחיקת סוג משימה
-        function deleteTaskType(index) {
-            if (!confirm('האם אתה בטוח שברצונך למחוק את סוג המשימה?')) {
-                return;
-            }
-            
-            allTaskTypes.splice(index, 1);
-            localStorage.setItem('taskTypes', JSON.stringify(allTaskTypes));
-            displayTaskTypes();
-            
-            alert('סוג המשימה נמחק בהצלחה!');
         }
 
         // סנכרון לקוחות
         async function syncClients() {
-            const button = event.target;
-            const originalText = button.textContent;
-            
-            button.textContent = 'מסנכרן...';
-            button.disabled = true;
-            
-            try {
-                await loadClients();
-                displayClients();
-                
-                // עדכון תאריך סנכרון
-                const now = new Date().toISOString();
-                localStorage.setItem('lastClientSync', now);
-                document.getElementById('lastSyncDate').textContent = formatDate(now);
-                
-                alert(`סנכרון הושלם! נטענו ${allClients.length} לקוחות`);
-                
-            } catch (error) {
-                console.error('שגיאה בסנכרון:', error);
-                alert('שגיאה בסנכרון לקוחות');
-            } finally {
-                button.textContent = originalText;
-                button.disabled = false;
-            }
+            alert('מסנכרן לקוחות...');
+            await loadClients();
+            alert(`סנכרון הושלם! נטענו ${allClients.length} לקוחות`);
         }
 
-        // פונקציות עזר
-        function showError(elementId, message) {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.style.display = 'block';
+        // הגדרות (placeholder)
+        function showSettings() {
+            alert('מסך הגדרות יתווסף בקרוב!\nכרגע תוכל:\n✅ להוסיף משימות\n✅ לערוך סטטוס\n✅ להוסיף תגובות\n✅ לסנכרן לקוחות');
         }
 
-        function clearError(elementId) {
-            const element = document.getElementById(elementId);
-            element.textContent = '';
-            element.style.display = 'none';
-        }
-
-        function showLoading() {
-            // יצירת אלמנט טעינה זמני
-            const loading = document.createElement('div');
-            loading.id = 'loadingIndicator';
-            loading.className = 'loading';
-            loading.innerHTML = 'טוען נתונים...<div class="spinner"></div>';
-            document.body.appendChild(loading);
-        }
-
-        function hideLoading() {
-            const loading = document.getElementById('loadingIndicator');
-            if (loading) {
-                loading.remove();
-            }
-        }
-
-        // סנכרון אוטומטי שבועי
-        function setupAutoSync() {
-            // בדיקה אם עבר שבוע מהסנכרון האחרון
-            const lastSync = localStorage.getItem('lastClientSync');
-            const now = new Date();
-            
-            if (!lastSync) {
-                // סנכרון ראשוני
-                loadClients();
-                return;
-            }
-            
-            const lastSyncDate = new Date(lastSync);
-            const weekInMs = 7 * 24 * 60 * 60 * 1000; // שבוע במילישניות
-            
-            if (now - lastSyncDate > weekInMs) {
-                console.log('מבצע סנכרון אוטומטי שבועי...');
-                loadClients();
-            }
-        }
-
-        // הפעלת סנכרון אוטומטי כשהמערכת נטענת
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(setupAutoSync, 2000); // המתנה של 2 שניות
-        });
-
-        // הוספת event listeners לסגירת מודלים בלחיצה מחוץ לתוכן
+        // סגירת מודלים בלחיצה מחוץ לתוכן
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.classList.remove('active');
             }
         });
 
-        // הוספת event listeners למקלדת
+        // סגירת מודלים ב-ESC
         document.addEventListener('keydown', function(event) {
-            // סגירת מודלים ב-ESC
             if (event.key === 'Escape') {
                 document.querySelectorAll('.modal.active').forEach(modal => {
                     modal.classList.remove('active');
                 });
             }
-            
-            // כניסה ב-Enter במסך הכניסה
-            if (event.key === 'Enter' && document.getElementById('loginScreen').classList.contains('active')) {
-                login();
-            }
         });
-
-        // פונקציה לייצוא נתונים
-        function exportData() {
-            const data = {
-                tasks: allTasks,
-                users: allUsers.map(u => ({...u, password: '***'})), // הסתרת סיסמאות
-                clients: allClients,
-                taskTypes: allTaskTypes,
-                exportDate: new Date().toISOString()
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `task-management-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('הנתונים יוצאו בהצלחה!');
-        }
-
-        // Debug function לבדיקת חיבור ל-Google Sheets
-        async function testGoogleSheetsConnection() {
-            console.log('בודק חיבור ל-Google Sheets...');
-            
-            try {
-                const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${CLIENTS_SHEET_ID}?key=${API_KEY}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('חיבור תקין:', data.properties.title);
-                    return true;
-                } else {
-                    console.error('שגיאה בחיבור:', response.status, response.statusText);
-                    return false;
-                }
-            } catch (error) {
-                console.error('שגיאה בבדיקת חיבור:', error);
-                return false;
-            }
-        }
-
-        // הפעלת בדיקת חיבור בעת טעינת העמוד (רק למפתחים)
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            setTimeout(testGoogleSheetsConnection, 3000);
-        }
     </script>
-    <!-- ===== JAVASCRIPT נגמר כאן ===== -->
 </body>
 </html>
